@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import {Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {useEffect, useState} from 'react';
+import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+
+import * as LocalAuthentication from 'expo-local-authentication';
 
 import {biometricLogin, login} from '../services/Authentification';
 
@@ -13,6 +15,25 @@ export default function LoginScreen({onLoginSuccess, onRegisterPress}: LoginScre
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
+	const [biometricsAvailable, setBiometricsAvailable] = useState(false);
+
+	useEffect(() =>
+	{
+		async function checkBiometrics()
+		{
+			const hasHardware = await LocalAuthentication.hasHardwareAsync();
+			if (!hasHardware)
+			{
+				setBiometricsAvailable(false);
+				return;
+			}
+
+			const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+			setBiometricsAvailable(isEnrolled);
+		}
+
+		checkBiometrics();
+	}, []);
 
 	async function handleLogin()
 	{
@@ -140,18 +161,20 @@ export default function LoginScreen({onLoginSuccess, onRegisterPress}: LoginScre
 					</Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity
-					style={[
-						styles.biometricButton,
-						loading && styles.buttonDisabled,
-					]}
-					onPress={handleBiometricLogin}
-					disabled={loading}
-				>
-					<Text style={styles.biometricButtonText}>
-						Sign in with biometrics
-					</Text>
-				</TouchableOpacity>
+				{biometricsAvailable && (
+					<TouchableOpacity
+						style={[
+							styles.biometricButton,
+							loading && styles.buttonDisabled,
+						]}
+						onPress={handleBiometricLogin}
+						disabled={loading}
+					>
+						<Text style={styles.biometricButtonText}>
+							Sign in with biometrics
+						</Text>
+					</TouchableOpacity>
+				)}
 
 				<TouchableOpacity
 					style={styles.registerButton}
