@@ -1,17 +1,29 @@
-import * as Crypto from 'expo-crypto'; //transforma la contraseña en un hash
-import * as SecureStore from 'expo-secure-store'; //almacena ese hash de forma segura
-import * as LocalAuthentication from 'expo-local-authentication'; //huella movil
+import * as Crypto from 'expo-crypto';
+import * as SecureStore from 'expo-secure-store';
+import * as LocalAuthentication from 'expo-local-authentication';
+import bcrypt from 'bcryptjs';
 
 import { User } from '../types/auth';
 
 const USER_KEY = 'swifty_proteins_user';
 
-async function hashPassword(password: string): Promise<string>
+// Cada +1 duplica el tiempo. Empieza en 10 y mide en tu móvil.
+const BCRYPT_COST = 10;
+
+// React Native no trae un generador aleatorio que bcryptjs detecte solo
+bcrypt.setRandomFallback((len: number) => Array.from(Crypto.getRandomBytes(len)));
+
+function isValidUser(value: any): value is User
 {
-	return await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, password);
+	return (
+		value
+		&& typeof value.username === 'string'
+		&& typeof value.passwordHash === 'string'
+		&& value.algorithm === 'bcrypt'
+	);
 }
 
-export async function register(username: string, password: string,): Promise<void>
+export async function register(username: string, password: string): Promise<void>
 {
 	const cleanUsername = username.trim();
 
@@ -19,18 +31,21 @@ export async function register(username: string, password: string,): Promise<voi
 		throw new Error('Username is required.');
 
 	if (password.length < 8)
-		throw new Error(`Password must contain at least 8 characters.`);
+		throw new Error('Password must contain at least 8 characters.');
+
+	if (new TextEncoder().encode(password).length > 72)
+		throw new Error('Password must be at most 72 bytes long.');
 
 	const existingUser = await getUser();
-
 	if (existingUser)
 		throw new Error('An account already exists.');
 
-	const passwordHash = await hashPassword(password);
+	const passwordHash = await bcrypt.hash(password, BCRYPT_COST);
 
 	const user: User = {
 		username: cleanUsername,
 		passwordHash,
+		algorithm: 'bcrypt',
 	};
 
 	await SecureStore.setItemAsync(USER_KEY, JSON.stringify(user));
@@ -39,13 +54,13 @@ export async function register(username: string, password: string,): Promise<voi
 export async function getUser(): Promise<User | null>
 {
 	const storedUser = await SecureStore.getItemAsync(USER_KEY);
-
 	if (!storedUser)
 		return null;
 
 	try
 	{
-		return JSON.parse(storedUser) as User;
+		const parsed = JSON.parse(storedUser);
+		return isValidUser(parsed) ? parsed : null;
 	}
 	catch
 	{
@@ -56,14 +71,13 @@ export async function getUser(): Promise<User | null>
 export async function login(username: string, password: string): Promise<boolean>
 {
 	const user = await getUser();
-
 	if (!user)
 		return false;
 
-	const cleanUsername = username.trim();
-	const passwordHash = await hashPassword(password);
+	const passwordOk = await bcrypt.compare(password, user.passwordHash);
+	const usernameOk = user.username === username.trim();
 
-	return (user.username === cleanUsername && user.passwordHash === passwordHash);
+	return usernameOk && passwordOk;
 }
 
 export async function biometricLogin(): Promise<boolean>
