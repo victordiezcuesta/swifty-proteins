@@ -1,14 +1,5 @@
 import { useState } from 'react';
-import {
-	Alert,
-	KeyboardAvoidingView,
-	Platform,
-	StyleSheet,
-	Text,
-	TextInput,
-	TouchableOpacity,
-	View,
-} from 'react-native';
+import {Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 
 import { register } from '../services/Authentification';
 
@@ -16,9 +7,7 @@ type RegisterScreenProps = {
 	onRegisterSuccess?: () => void;
 };
 
-export default function RegisterScreen({
-	onRegisterSuccess,
-}: RegisterScreenProps)
+export default function RegisterScreen({onRegisterSuccess}: RegisterScreenProps)
 {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
@@ -29,28 +18,19 @@ export default function RegisterScreen({
 	{
 		if (!username.trim())
 		{
-			Alert.alert(
-				'Invalid username',
-				'Please enter a username.',
-			);
+			Alert.alert('Invalid username', 'Please enter a username.',);
 			return;
 		}
 
 		if (password.length < 8)
 		{
-			Alert.alert(
-				'Invalid password',
-				'Password must contain at least 8 characters.',
-			);
+			Alert.alert('Invalid password', 'Password must contain at least 8 characters.');
 			return;
 		}
 
 		if (password !== confirmPassword)
 		{
-			Alert.alert(
-				'Passwords do not match',
-				'Please make sure both passwords are identical.',
-			);
+			Alert.alert('Passwords do not match', 'Please make sure both passwords are identical.');
 			return;
 		}
 
@@ -60,10 +40,8 @@ export default function RegisterScreen({
 
 			await register(username, password);
 
-			Alert.alert(
-				'Account created',
-				'Your account has been created successfully.',
-				[
+			Alert.alert('Account created', 'Your account has been created successfully.',
+				[ //AlertButton
 					{
 						text: 'Continue',
 						onPress: onRegisterSuccess,
@@ -73,8 +51,7 @@ export default function RegisterScreen({
 		}
 		catch (error)
 		{
-			const message =
-				error instanceof Error
+			const message = error instanceof Error
 					? error.message
 					: 'Unable to create the account.';
 
