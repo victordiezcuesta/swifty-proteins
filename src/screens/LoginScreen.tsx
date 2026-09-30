@@ -61,7 +61,12 @@ export default function LoginScreen({onLoginSuccess, onRegisterPress}: LoginScre
 		{
 			setLoading(true);
 
-			await biometricLogin();
+			const success = await biometricLogin();
+			if (!success)
+			{
+				Alert.alert('Biometric authentication', 'Biometric authentication failed. Please try again.');
+				return;
+			}
 
 			onLoginSuccess?.();
 		}
