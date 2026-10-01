@@ -1,18 +1,21 @@
-NAME = swifty-proteins
+.PHONY: install ligands start android go cluster clean re
 
 install:
 	npm install
 
-start:
+ligands:
+	node scripts/generate-ligands.js
+
+start: ligands
 	npx expo start
 
-android:
+android: ligands
 	npx expo start --android
 
-go:
-	npx expo start --go
+go: ligands
+	npx expo start --go -c
 
-cluster:
+cluster: ligands
 	adb reverse tcp:8081 tcp:8081
 	npx expo start --go --localhost
 

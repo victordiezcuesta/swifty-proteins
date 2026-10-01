@@ -6,8 +6,6 @@ import bcrypt from 'bcryptjs';
 import { User } from '../types/auth';
 
 const USER_KEY = 'swifty_proteins_user';
-
-// Cada +1 duplica el tiempo. Empieza en 10 y mide en tu móvil.
 const BCRYPT_COST = 10;
 
 // React Native no trae un generador aleatorio que bcryptjs detecte solo

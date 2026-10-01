@@ -3,9 +3,9 @@ import {AppState, AppStateStatus} from 'react-native';
 
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
-import HomeScreen from './src/screens/HomeScreen';
+import LigandListScreen from './src/screens/LigandListScreen';
 
-type Screen = 'login' | 'register' | 'home';
+type Screen = 'login' | 'register' | 'list';
 
 export default function App()
 {
@@ -38,16 +38,20 @@ export default function App()
 		);
 	}
 
-	if (screen === 'home')
+	if (screen === 'list')
 	{
 		return (
-			<HomeScreen />
+			<LigandListScreen
+				onLogout={() => setScreen('login')}
+				onSelectLigand={(id) => console.log('selected', id)} // provisional
+			/>
 		);
 	}
 
+
 	return (
 		<LoginScreen
-			onLoginSuccess={() => setScreen('home')}
+			onLoginSuccess={() => setScreen('list')}
 			onRegisterPress={() => setScreen('register')}
 		/>
 	);
