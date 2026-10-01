@@ -5,10 +5,14 @@ import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import LigandListScreen from './src/screens/LigandListScreen';
 import LigandScreen from './src/screens/LigandScreen';
+import ThreeTestScreen from './src/screens/ThreeTestScreen';
 
 import {fetchLigand} from './src/services/DownloadToRcsb';
 import {parseCif} from './src/services/ParseCifRcsb';
 import {Molecule} from './src/types/molecule';
+
+import {LogBox} from 'react-native';
+LogBox.ignoreLogs(['THREE.WebGLRenderer: WebGL 1 support was deprecated']); //ignoramos el warning para que no nos salga porque hemos bajado la version de three porque no era compatible
 
 type Screen = 'login' | 'register' | 'list' | 'ligand';
 
@@ -103,10 +107,11 @@ export default function App()
 	}
 
 
-	return (
+	/*return (
 		<LoginScreen
 			onLoginSuccess={() => setScreen('list')}
 			onRegisterPress={() => setScreen('register')}
 		/>
-	);
+	);*/
+	return <ThreeTestScreen />;
 }
