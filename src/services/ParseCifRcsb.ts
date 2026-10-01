@@ -7,18 +7,15 @@ function parseAtoms(lines: string[]): Atom[]
 	for (let i = 0; i < lines.length; i++)
 	{
 		const line = lines[i].trim();
-
 		if (line !== 'loop_')
 			continue;
 
 		const headers: string[] = [];
 
 		let j = i + 1;
-
 		while (j < lines.length)
 		{
 			const header = lines[j].trim();
-
 			if (!header.startsWith('_'))
 				break;
 
@@ -39,24 +36,21 @@ function parseAtoms(lines: string[]): Atom[]
 			throw new Error('Invalid CIF: atom coordinates are missing.');
 
 		i = j;
-
 		while (i < lines.length)
 		{
 			const dataLine = lines[i].trim();
-
 			if (!dataLine)
 			{
 				i++;
 				continue;
 			}
 
-			if (dataLine === 'loop_' || dataLine.startsWith('_'))
+			if (dataLine.startsWith('#')  || dataLine === 'loop_' || dataLine.startsWith('_'))
 				break;
 
 			const values = dataLine.split(/\s+/);
-
 			if (values.length < headers.length)
-				throw new Error('Invalid CIF: incomplete atom data.');
+				throw new Error(`Invalid CIF: incomplete atom data at line ${i + 1}.`);
 
 			const atomId = values[atomIdIndex];
 			const element = values[elementIndex];
@@ -64,8 +58,14 @@ function parseAtoms(lines: string[]): Atom[]
 			const y = Number(values[yIndex]);
 			const z = Number(values[zIndex]);
 
+			/*console.log('Atoma ID: ', atomId);
+			console.log('Element: ', element);
+			console.log('X: ', x);
+			console.log('Y: ', y);
+			console.log('Z: ', z);*/
+
 			if (!atomId || !element || !Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z))
-				throw new Error('Invalid CIF: invalid atom data.');
+				throw new Error(`Invalid CIF: invalid atom data`);
 
 			atoms.push({
 				id: atomId,
@@ -74,13 +74,10 @@ function parseAtoms(lines: string[]): Atom[]
 				y,
 				z,
 			});
-
 			i++;
 		}
-
 		break;
 	}
-
 	if (atoms.length === 0)
 		throw new Error('Invalid CIF: no atoms found.');
 
@@ -94,18 +91,15 @@ function parseBonds(lines: string[]): Bond[]
 	for (let i = 0; i < lines.length; i++)
 	{
 		const line = lines[i].trim();
-
 		if (line !== 'loop_')
 			continue;
 
 		const headers: string[] = [];
 
 		let j = i + 1;
-
 		while (j < lines.length)
 		{
 			const header = lines[j].trim();
-
 			if (!header.startsWith('_'))
 				break;
 
@@ -124,34 +118,29 @@ function parseBonds(lines: string[]): Bond[]
 			throw new Error('Invalid CIF: bond information is missing.');
 
 		i = j;
-
 		while (i < lines.length)
 		{
 			const dataLine = lines[i].trim();
-
 			if (!dataLine)
 			{
 				i++;
 				continue;
 			}
 
-			if (dataLine === 'loop_' || dataLine.startsWith('_'))
+			if (dataLine.startsWith('#') || dataLine === 'loop_' || dataLine.startsWith('_'))
 				break;
 
 			const values = dataLine.split(/\s+/);
-
 			if (values.length < headers.length)
 				throw new Error('Invalid CIF: incomplete bond data.');
 
 			const atom1 = values[atom1Index];
 			const atom2 = values[atom2Index];
 			const valueOrder = values[orderIndex];
-
 			if (!atom1 || !atom2 || !valueOrder)
 				throw new Error('Invalid CIF: invalid bond data.');
 
 			let order: number;
-
 			switch (valueOrder.toUpperCase())
 			{
 				case 'SING':
@@ -179,13 +168,10 @@ function parseBonds(lines: string[]): Bond[]
 				atom2,
 				order,
 			});
-
 			i++;
 		}
-
 		break;
 	}
-
 	return bonds;
 }
 

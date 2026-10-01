@@ -7,6 +7,8 @@ import LigandListScreen from './src/screens/LigandListScreen';
 import LigandScreen from './src/screens/LigandScreen';
 
 import {fetchLigand} from './src/services/DownloadToRcsb';
+import {parseCif} from './src/services/ParseCifRcsb';
+import {Molecule} from './src/types/molecule';
 
 type Screen = 'login' | 'register' | 'list' | 'ligand';
 
@@ -17,6 +19,7 @@ export default function App()
 	const [ligandCif, setLigandCif] = useState<string | null>(null);
 	const [ligandLoading, setLigandLoading] = useState(false);
 	const [ligandError, setLigandError] = useState<string | null>(null);
+	const [ligandMolecule, setLigandMolecule] = useState<Molecule | null>(null);
 
 	const appState = useRef<AppStateStatus>(AppState.currentState);
 
@@ -75,12 +78,16 @@ export default function App()
 		setLigandCif(null);
 		setLigandError(null);
 		setLigandLoading(true);
+		setLigandMolecule(null);
 		setScreen('ligand');
 
 		try
 		{
 			const cif = await fetchLigand(id);
+			const molecule = parseCif(cif);
+
 			setLigandCif(cif);
+			setLigandMolecule(molecule);
 		}
 		catch (error)
 		{
