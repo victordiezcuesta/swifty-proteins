@@ -1,20 +1,18 @@
 import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
+import MoleculeView from '../components/3d/MoleculeView';
+import {Molecule} from '../types/molecule';
+
 type LigandScreenProps = {
 	ligandId: string | null;
 	cif: string | null;
 	loading: boolean;
 	error: string | null;
 	onBack?: () => void;
+	molecule: Molecule | null;
 };
 
-export default function LigandScreen({
-	ligandId,
-	cif,
-	loading,
-	error,
-	onBack,
-}: LigandScreenProps)
+export default function LigandScreen({ligandId, cif, loading, error, onBack, molecule}: LigandScreenProps)
 {
 	if (loading)
 	{
@@ -49,6 +47,19 @@ export default function LigandScreen({
 					<Text style={styles.buttonText}>
 						Back to ligands
 					</Text>
+				</TouchableOpacity>
+			</View>
+		);
+	}
+
+	if (molecule)
+	{
+		return (
+			<View style={{flex: 1}}>
+				<MoleculeView molecule={molecule} />
+
+				<TouchableOpacity style={[styles.button, {position: 'absolute', bottom: 40, alignSelf: 'center'}]} onPress={onBack}>
+					<Text style={styles.buttonText}>Back to ligands</Text>
 				</TouchableOpacity>
 			</View>
 		);

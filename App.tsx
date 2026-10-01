@@ -5,7 +5,7 @@ import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import LigandListScreen from './src/screens/LigandListScreen';
 import LigandScreen from './src/screens/LigandScreen';
-import ThreeTestScreen from './src/screens/ThreeTestScreen';
+//import ThreeTestScreen from './src/screens/ThreeTestScreen';
 
 import {fetchLigand} from './src/services/DownloadToRcsb';
 import {parseCif} from './src/services/ParseCifRcsb';
@@ -72,6 +72,7 @@ export default function App()
 				loading={ligandLoading}
 				error={ligandError}
 				onBack={() => setScreen('list')}
+				molecule={ligandMolecule}
 			/>
 		);
 	}
@@ -106,12 +107,10 @@ export default function App()
 		}
 	}
 
-
-	/*return (
+	return (
 		<LoginScreen
 			onLoginSuccess={() => setScreen('list')}
 			onRegisterPress={() => setScreen('register')}
 		/>
-	);*/
-	return <ThreeTestScreen />;
+	);
 }
