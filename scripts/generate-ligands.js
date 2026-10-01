@@ -3,7 +3,7 @@ const path = require('path');
 
 const INPUT = path.join(__dirname, '..', 'assets', 'ligands.txt');
 const OUTPUT = path.join(__dirname, '..', 'src', 'utils', 'ligandList.ts');
-const ID_REGEX = /^[A-Za-z0-9]{1,5}$/; // identificadores tipo "ATP", "001", "HEM"
+const ID_REGEX = /^[A-Za-z0-9]{1,3}$/; // identificadores tipo "ATP", "001", "HEM"
 
 function fail(message)
 {

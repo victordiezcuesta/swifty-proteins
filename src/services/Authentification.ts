@@ -96,11 +96,8 @@ export async function biometricLogin(): Promise<boolean>
 		promptMessage: 'Log in to Swifty Protein',
 		cancelLabel: 'Cancel',
 	});
-
 	if (!result.success)
-	{
 		throw new Error('Biometric authentication failed. Please try again.');
-	}
 
 	return true;
 }
