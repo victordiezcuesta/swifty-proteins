@@ -28,35 +28,73 @@ function parseAtoms(lines: string[]): Atom[]
 
 		const atomIdIndex = headers.indexOf('_chem_comp_atom.atom_id');
 		const elementIndex = headers.indexOf('_chem_comp_atom.type_symbol');
+
+		// Coordenadas normales
 		const xIndex = headers.indexOf('_chem_comp_atom.model_Cartn_x');
 		const yIndex = headers.indexOf('_chem_comp_atom.model_Cartn_y');
 		const zIndex = headers.indexOf('_chem_comp_atom.model_Cartn_z');
 
-		if (atomIdIndex === -1 || elementIndex === -1 || xIndex === -1 || yIndex === -1 || zIndex === -1)
+		// Coordenadas ideales (alternativa)
+		const xIdealIndex = headers.indexOf('_chem_comp_atom.pdbx_model_Cartn_x_ideal');
+		const yIdealIndex = headers.indexOf('_chem_comp_atom.pdbx_model_Cartn_y_ideal');
+		const zIdealIndex = headers.indexOf('_chem_comp_atom.pdbx_model_Cartn_z_ideal');
+
+		if (atomIdIndex === -1 || elementIndex === -1)
+			throw new Error('Invalid CIF: atom information is missing.');
+
+		// Debe existir al menos un conjunto de coordenadas completo.
+		const hasNormalCoordinates = xIndex !== -1 && yIndex !== -1 && zIndex !== -1;
+
+		const hasIdealCoordinates = xIdealIndex !== -1 && yIdealIndex !== -1 && zIdealIndex !== -1;
+
+		if (!hasNormalCoordinates && !hasIdealCoordinates)
 			throw new Error('Invalid CIF: atom coordinates are missing.');
 
 		i = j;
+
 		while (i < lines.length)
 		{
 			const dataLine = lines[i].trim();
+
 			if (!dataLine)
 			{
 				i++;
 				continue;
 			}
 
-			if (dataLine.startsWith('#')  || dataLine === 'loop_' || dataLine.startsWith('_'))
+			if (dataLine.startsWith('#') || dataLine === 'loop_' || dataLine.startsWith('_'))
 				break;
 
 			const values = dataLine.split(/\s+/);
+
 			if (values.length < headers.length)
 				throw new Error(`Invalid CIF: incomplete atom data at line ${i + 1}.`);
 
 			const atomId = values[atomIdIndex];
 			const element = values[elementIndex];
-			const x = Number(values[xIndex]);
-			const y = Number(values[yIndex]);
-			const z = Number(values[zIndex]);
+
+			// Leemos las coordenadas normales si existen.
+			const normalX = hasNormalCoordinates ? values[xIndex] : '?';
+			const normalY = hasNormalCoordinates ? values[yIndex] : '?';
+			const normalZ = hasNormalCoordinates ? values[zIndex] : '?';
+
+			// Si una coordenada normal es desconocida ('?'),
+			// utilizamos su equivalente ideal.
+			const xValue = normalX === '?' && hasIdealCoordinates
+				? values[xIdealIndex]
+				: normalX;
+
+			const yValue = normalY === '?' && hasIdealCoordinates
+				? values[yIdealIndex]
+				: normalY;
+
+			const zValue = normalZ === '?' && hasIdealCoordinates
+				? values[zIdealIndex]
+				: normalZ;
+
+			const x = Number(xValue);
+			const y = Number(yValue);
+			const z = Number(zValue);
 
 			/*console.log('Atoma ID: ', atomId);
 			console.log('Element: ', element);
@@ -64,7 +102,7 @@ function parseAtoms(lines: string[]): Atom[]
 			console.log('Y: ', y);
 			console.log('Z: ', z);*/
 
-			if (!atomId || !element || !Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z))
+			if (!atomId || !element || xValue === '?' || yValue === '?' || zValue === '?' || xValue === '.' || yValue === '.' || zValue === '.' || !Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z))
 				throw new Error(`Invalid CIF: invalid atom data`);
 
 			atoms.push({
