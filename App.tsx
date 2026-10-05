@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import {AppState, AppStateStatus} from 'react-native';
+import {Alert, AppState, AppStateStatus} from 'react-native';
 
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
@@ -89,17 +89,28 @@ export default function App()
 		try
 		{
 			const cif = await fetchLigand(id);
-			const molecule = parseCif(cif);
+
+			let molecule: Molecule;
+			try
+			{
+				molecule = parseCif(cif);
+			}
+			catch
+			{
+				throw new Error('Failed to parse ligand data. The file may be corrupted.');
+			}
 
 			setLigandCif(cif);
 			setLigandMolecule(molecule);
 		}
 		catch (error)
 		{
-			setLigandError(error instanceof Error
+			const message = error instanceof Error
 				? error.message
-				: 'Unable to load the ligand.',
-			);
+				: 'Unable to load the ligand.';
+
+			setLigandError(message);
+			Alert.alert('Ligand loading failed', message);
 		}
 		finally
 		{
