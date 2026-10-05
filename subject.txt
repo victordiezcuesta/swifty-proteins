@@ -128,16 +128,7 @@ VI.1 Application Icon and Launch Screen
 	• The launch screen must not be a static image that looks like the app is loading
 	  forever. It should be a clean, branded splash screen.
 
--COMPROBAR:
- If the ligand cannot be loaded, you must display a warning popup/alert with a clear
-	  error message explaining what went wrong:
-		◦ "No internet connection. Please check your network."
-		◦ "Ligand not found (404). This ligand may not exist in the database."
-		◦ "Failed to parse ligand data. The file may be corrupted."
-		◦ "Request timeout. Please try again."
 
-
-- HACER QUE EL USUARIO TENGA ENTRE 3 Y 50 CARACTERES
 - HACER QUE LA CONTRASEÑA TENGA 8 DIGITOS ENTRE NUMEROS MAYUSCULA MINUSCULA Y CARACTER ESPECIAL
 - SACAR LOS STYLES
 - ESCRIBIR ALGUNOS COMENTARIOS ACLARATORIOS

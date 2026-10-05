@@ -28,6 +28,12 @@ export async function register(username: string, password: string): Promise<void
 	if (!cleanUsername)
 		throw new Error('Username is required.');
 
+	if (cleanUsername.length < 3)
+		throw new Error('Username must contain at least 3 characters.');
+
+	if (cleanUsername.length >= 50)
+		throw new Error('Username must be less than 50 characters.');
+
 	if (password.length < 8)
 		throw new Error('Password must contain at least 8 characters.');
 
