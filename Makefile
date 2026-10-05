@@ -1,4 +1,7 @@
-.PHONY: install ligands start android go cluster clean re
+.PHONY: install ligands start android eval go cluster clean re build-goinfre
+
+# Carpeta donde se hará la compilación
+GOINFRE := /goinfre/$(USER)/swifty-proteins
 
 install:
 	npm install
@@ -9,9 +12,31 @@ ligands:
 start: ligands
 	npx expo start
 
-android: ligands
-	npx expo start --android
+# --------------------------------------------------
+# GOINFRE
+# --------------------------------------------------
+build-goinfre: ligands
+	mkdir -p $(GOINFRE)
+	rsync -a --delete \
+		--exclude node_modules \
+		--exclude .git \
+		--exclude .expo \
+		./ $(GOINFRE)/
 
+	cd $(GOINFRE) && npm install
+
+# --------------------------------------------------
+# ANDROID
+# --------------------------------------------------
+android: build-goinfre
+	cd $(GOINFRE) && npx expo run:android --device
+
+eval: build-goinfre
+	cd $(GOINFRE) && npx expo run:android --device --variant release
+
+# --------------------------------------------------
+# EXPO GO
+# --------------------------------------------------
 go: ligands
 	npx expo start --go -c
 
