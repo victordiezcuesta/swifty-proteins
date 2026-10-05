@@ -110,3 +110,35 @@ VI.4 Protein View
 		◦ Consider using multiple light sources for better depth perception
 	• The 3D rendering must be smooth and performant. No lag, stuttering, or frame
 	  drops during interaction.
+
+
+
+
+
+
+
+COSAS QUE FALTAN:
+
+VI.1 Application Icon and Launch Screen
+	• Choose an icon for your application that is in accordance with the theme (molecular
+	  /scientific/medical). The icon must be properly sized for all required resolutions
+	  on your platform.
+	• When the application is launched, it must display a Launch Screen that remains
+	  visible for at least 1-2 seconds. The launch screen should be professional and thematic.
+	• The launch screen must not be a static image that looks like the app is loading
+	  forever. It should be a clean, branded splash screen.
+
+-COMPROBAR:
+ If the ligand cannot be loaded, you must display a warning popup/alert with a clear
+	  error message explaining what went wrong:
+		◦ "No internet connection. Please check your network."
+		◦ "Ligand not found (404). This ligand may not exist in the database."
+		◦ "Failed to parse ligand data. The file may be corrupted."
+		◦ "Request timeout. Please try again."
+
+
+- HACER QUE EL USUARIO TENGA ENTRE 3 Y 50 CARACTERES
+- HACER QUE LA CONTRASEÑA TENGA 8 DIGITOS ENTRE NUMEROS MAYUSCULA MINUSCULA Y CARACTER ESPECIAL
+- SACAR LOS STYLES
+- ESCRIBIR ALGUNOS COMENTARIOS ACLARATORIOS
+- BONUS
