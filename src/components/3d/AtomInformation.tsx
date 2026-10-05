@@ -20,7 +20,10 @@ export default function AtomInformation({atom}: AtomInformationProps)
 				<Text style={styles.element}>{atom.element}</Text>
 			</View>
 
-			<Text style={styles.line}>Name: {atom.id}</Text>
+			<Text style={styles.line}>
+				Name: {atom.id}
+			</Text>
+			
 			<Text style={styles.line}>
 				x: {atom.x.toFixed(3)}  y: {atom.y.toFixed(3)}  z: {atom.z.toFixed(3)}
 			</Text>
