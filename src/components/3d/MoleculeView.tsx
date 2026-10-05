@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import {View} from 'react-native';
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {GLView, ExpoWebGLRenderingContext} from 'expo-gl';
 import * as THREE from 'three';
 
@@ -8,6 +8,7 @@ import {createAtomsView, disposeAtomsView} from './AtomsViews';
 import {createBondsView, disposeBondsView} from './BondsViews';
 import GestureControls from './GestureControls';
 import AtomInformation from './AtomInformation';
+import {shareMolecule} from '../../services/Share';
 
 type MoleculeViewProps = {
     molecule: Molecule;
@@ -32,6 +33,8 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 	const moleculeGroupRef = useRef<THREE.Group | null>(null);
 	const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
 	const radiusRef = useRef(1);
+	const glRef = useRef<ExpoWebGLRenderingContext | null>(null);
+	const [sharing, setSharing] = useState(false);
 
 	useEffect(() =>
 	{
@@ -45,11 +48,14 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 			moleculeGroupRef.current = null;
 			cameraRef.current = null;
 			atomsGroupRef.current = null;
+			glRef.current = null;
 		};
 	}, []);
 
 	function onContextCreate(gl: ExpoWebGLRenderingContext)
 	{
+		glRef.current = gl;
+
 		const width = gl.drawingBufferWidth;
 		const height = gl.drawingBufferHeight;
 
@@ -173,6 +179,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 			moleculeGroupRef.current = null;
 			cameraRef.current = null;
 			atomsGroupRef.current = null;
+			glRef.current = null;
 		};
 	}
 
@@ -235,6 +242,32 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		setSelectedAtom(hits.length > 0 ? (hits[0].object.userData.atom as Atom) : null);
 	}
 
+	async function handleShare()
+	{
+		const gl = glRef.current;
+
+		if (!gl || sharing)
+			return;
+
+		try
+		{
+			setSharing(true);
+			await shareMolecule(gl);
+		}
+		catch (error)
+		{
+			const message = error instanceof Error
+				? error.message
+				: 'Unable to share the molecule.';
+
+			Alert.alert('Share failed', message);
+		}
+		finally
+		{
+			setSharing(false);
+		}
+	}
+
 	return (
 		<View style={{flex: 1}}>
 			<GestureControls onRotate={rotateMolecule} onZoom={zoomCamera} onTap={handleTap}>
@@ -242,6 +275,36 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 			</GestureControls>
 
 			<AtomInformation atom={selectedAtom} />
+
+			<TouchableOpacity
+				style={styles.shareButton}
+				onPress={handleShare}
+				disabled={sharing}
+			>
+				<Text style={styles.shareButtonText}>
+					{sharing ? 'Sharing...' : 'Share'}
+				</Text>
+			</TouchableOpacity>
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	shareButton: {
+		position: 'absolute',
+		top: 50,
+		right: 20,
+		height: 44,
+		paddingHorizontal: 18,
+		borderRadius: 10,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: '#2563EB',
+	},
+
+	shareButtonText: {
+		color: '#FFFFFF',
+		fontSize: 15,
+		fontWeight: '700',
+	},
+});
