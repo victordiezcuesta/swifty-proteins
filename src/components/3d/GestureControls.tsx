@@ -1,5 +1,7 @@
 import {ReactNode, useRef} from 'react';
-import {LayoutChangeEvent, PanResponder, StyleSheet, View} from 'react-native';
+import {LayoutChangeEvent, PanResponder, View} from 'react-native';
+
+import {styles} from '../../styles/GestureControls.styles';
 
 type TouchPoint = {
     pageX: number;
@@ -118,11 +120,3 @@ export default function GestureControls({children, onRotate, onZoom, onTap}: Ges
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {flex: 1},
-    gestureLayer: {
-        ...StyleSheet.absoluteFill,
-        backgroundColor: 'transparent',
-    },
-});

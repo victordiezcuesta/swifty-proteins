@@ -1,7 +1,8 @@
-import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Text, TouchableOpacity, View} from 'react-native';
 
 import MoleculeView from '../components/3d/MoleculeView';
 import {Molecule} from '../types/molecule';
+import {styles} from '../styles/LigandScreen.styles';
 
 type LigandScreenProps = {
 	ligandId: string | null;
@@ -55,10 +56,10 @@ export default function LigandScreen({ligandId, cif, loading, error, onBack, mol
 	if (molecule)
 	{
 		return (
-			<View style={{flex: 1}}>
+			<View style={styles.moleculeContainer}>
 				<MoleculeView molecule={molecule} />
 
-				<TouchableOpacity style={[styles.button, {position: 'absolute', bottom: 40, alignSelf: 'center'}]} onPress={onBack}>
+				<TouchableOpacity style={[styles.button, styles.backButton]} onPress={onBack}>
 					<Text style={styles.buttonText}>Back to ligands</Text>
 				</TouchableOpacity>
 			</View>
@@ -104,69 +105,3 @@ export default function LigandScreen({ligandId, cif, loading, error, onBack, mol
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#F5F7FA',
-		paddingHorizontal: 24,
-		paddingTop: 60,
-	},
-
-	centered: {
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-
-	title: {
-		fontSize: 26,
-		fontWeight: '700',
-		color: '#17202A',
-		textAlign: 'center',
-	},
-
-	subtitle: {
-		marginTop: 12,
-		fontSize: 16,
-		color: '#68737D',
-		textAlign: 'center',
-	},
-
-	success: {
-		marginTop: 20,
-		fontSize: 18,
-		fontWeight: '600',
-		color: '#16803C',
-		textAlign: 'center',
-	},
-
-	error: {
-		marginTop: 16,
-		fontSize: 16,
-		color: '#B42318',
-		textAlign: 'center',
-	},
-
-	info: {
-		marginTop: 12,
-		fontSize: 15,
-		color: '#68737D',
-		textAlign: 'center',
-	},
-
-	button: {
-		height: 50,
-		marginTop: 28,
-		paddingHorizontal: 24,
-		borderRadius: 10,
-		alignItems: 'center',
-		justifyContent: 'center',
-		backgroundColor: '#2563EB',
-	},
-
-	buttonText: {
-		color: '#FFFFFF',
-		fontSize: 16,
-		fontWeight: '700',
-	},
-});

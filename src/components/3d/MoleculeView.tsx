@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, Text, TouchableOpacity, View} from 'react-native';
 import {GLView, ExpoWebGLRenderingContext} from 'expo-gl';
 import * as THREE from 'three';
 
@@ -9,6 +9,7 @@ import {createBondsView, disposeBondsView} from './BondsViews';
 import GestureControls from './GestureControls';
 import AtomInformation from './AtomInformation';
 import {shareMolecule} from '../../services/Share';
+import {styles} from '../../styles/MoleculeView.styles';
 
 type MoleculeViewProps = {
     molecule: Molecule;
@@ -269,9 +270,9 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 	}
 
 	return (
-		<View style={{flex: 1}}>
+		<View style={styles.container}>
 			<GestureControls onRotate={rotateMolecule} onZoom={zoomCamera} onTap={handleTap}>
-				<GLView style={{flex: 1}} onContextCreate={onContextCreate} />
+				<GLView style={styles.glView} onContextCreate={onContextCreate} />
 			</GestureControls>
 
 			<AtomInformation atom={selectedAtom} />
@@ -288,23 +289,3 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	shareButton: {
-		position: 'absolute',
-		top: 50,
-		right: 20,
-		height: 44,
-		paddingHorizontal: 18,
-		borderRadius: 10,
-		alignItems: 'center',
-		justifyContent: 'center',
-		backgroundColor: '#2563EB',
-	},
-
-	shareButtonText: {
-		color: '#FFFFFF',
-		fontSize: 15,
-		fontWeight: '700',
-	},
-});
