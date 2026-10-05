@@ -21,6 +21,22 @@ function isValidUser(value: any): value is User
 	);
 }
 
+function isValidPassword(password: string): boolean
+{
+	const hasNumber = /[0-9]/.test(password);
+	const hasUppercase = /[A-Z]/.test(password);
+	const hasLowercase = /[a-z]/.test(password);
+	const hasSpecial = /[^A-Za-z0-9]/.test(password);
+
+	return (
+		password.length >= 8
+		&& hasNumber
+		&& hasUppercase
+		&& hasLowercase
+		&& hasSpecial
+	);
+}
+
 export async function register(username: string, password: string): Promise<void>
 {
 	const cleanUsername = username.trim();
@@ -34,8 +50,8 @@ export async function register(username: string, password: string): Promise<void
 	if (cleanUsername.length >= 50)
 		throw new Error('Username must be less than 50 characters.');
 
-	if (password.length < 8)
-		throw new Error('Password must contain at least 8 characters.');
+	if (!isValidPassword(password))
+		throw new Error('Password must contain at least 8 characters, including a number, an uppercase letter, a lowercase letter, and a special character.');
 
 	if (new TextEncoder().encode(password).length > 72)
 		throw new Error('Password must be at most 72 bytes long.');
