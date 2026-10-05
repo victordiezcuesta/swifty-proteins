@@ -28,6 +28,7 @@ SCRIPT_NAME="$(basename "$0")"
 		! -name "LICENSE" \
 		! -name "AGENTS.md" \
 		! -name "$SCRIPT_NAME" \
+		! -name "subject.txt" \
 		-print |
 	while read -r file; do
 

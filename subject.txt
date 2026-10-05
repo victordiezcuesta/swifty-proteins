@@ -1,0 +1,112 @@
+Mandatory part
+To validate the mandatory part, you must complete all of the following criteria. Each
+feature must work flawlessly, and the application must handle all edge cases gracefully.
+
+VI.1 Application Icon and Launch Screen
+	• Choose an icon for your application that is in accordance with the theme (molecular
+	  /scientific/medical). The icon must be properly sized for all required resolutions
+	  on your platform.
+	• When the application is launched, it must display a Launch Screen that remains
+	  visible for at least 1-2 seconds. The launch screen should be professional and thematic.
+	• The launch screen must not be a static image that looks like the app is loading
+	  forever. It should be a clean, branded splash screen.
+VI.2 Login View
+	• Choose an authentication system that allows you to store and manage user accounts.
+	  Options include:
+		◦ Firebase Authentication
+		◦ Platform-specific secure storage (Keychain on iOS, KeyStore on Android)
+		◦ Custom backend with secure password hashing
+	• A user must be able to create an account with at least:
+		◦ Username (unique identifier)
+		◦ Password (must meet minimum security requirements)
+	• A user must be able to log in with biometric authentication:
+		◦ iOS: Face ID or Touch ID
+		◦ Android: BiometricPrompt API (fingerprint, face, iris)
+	• If biometric authentication fails, you must display a clear error message in a popup
+	  or alert dialog explaining why authentication failed (e.g., "Authentication failed.
+	  Please try again." or "Too many failed attempts.").
+	• If the device does not support biometric authentication, the user must be able to
+	  log in with their username and password. The biometric option should be hidden
+	  or disabled in this case.
+	• Security Requirement: The Login View must ALWAYS be displayed when
+	  launching the app. This means:
+		◦ When the app is first launched
+		◦ When the app is brought back from the background
+		◦ When the app is reopened after pressing the Home button
+		◦ Even if the user was previously authenticated
+	  This ensures that sensitive molecular data is protected.
+	• Passwords must never be stored in plain text. Use appropriate hashing algorithms
+	  (bcrypt, Argon2, or platform-specific secure storage).
+	• The login interface should be user-friendly with clear labels, appropriate keyboard
+	  types, and helpful error messages.
+VI.3 Protein List View
+	• You must display all ligands listed in the ligands.txt file (see attachments folder).
+	  This file contains a list of ligand identifiers, one per line.
+	• The list must be displayed in a scrollable view (UITableView on iOS, RecyclerView
+	  on Android, or equivalent).
+	• You must implement a search bar that enables users to filter the ligand list in
+	  real-time. The search should:
+		◦ Filter as the user types (no need to press a search button)
+		◦ Be case-insensitive
+		◦ Search through ligand identifiers
+		◦ Update the list immediately as the search query changes
+	• When a user selects a ligand from the list, the app must:
+		◦ Display a loading indicator (spinning wheel, progress bar, or skeleton screen)
+		◦ Fetch the .cif file from RCSB: https://files.rcsb.org/ligands/view/{ligand}.cif
+		◦ Parse the .cif file to extract atomic coordinates and bond information
+		◦ Navigate to the Protein View to display the 3D model
+	• If the ligand cannot be loaded, you must display a warning popup/alert with a clear
+	  error message explaining what went wrong:
+		◦ "No internet connection. Please check your network."
+		◦ "Ligand not found (404). This ligand may not exist in the database."
+		◦ "Failed to parse ligand data. The file may be corrupted."
+		◦ "Request timeout. Please try again."
+	• The loading indicator must be visible during the entire loading process and must
+	  disappear once loading is complete (success or failure).
+	• The list should handle large datasets efficiently without lag or stuttering.
+VI.4 Protein View
+	• For this section, you may use:
+		◦ iOS: SceneKit (recommended) or Metal
+		◦ Android: ViroCore, filament, or OpenGL ES
+		◦ Multiplatform: Any appropriate 3D rendering library
+		◦ Note: Full game engines (Unity, Unreal) are NOT allowed. You must integrate
+		  3D rendering into a standard mobile app.
+	• Display the ligand model in 3D with the following requirements:
+	• CPK Coloring: You must use the standard CPK (Corey-Pauling-Koltun) color
+	  scheme for atoms:
+		◦ Carbon (C): Black or Gray
+		◦ Hydrogen (H): White
+		◦ Oxygen (O): Red
+		◦ Nitrogen (N): Blue
+		◦ Sulfur (S): Yellow
+		◦ Phosphorus (P): Orange
+		◦ Other elements: Use standard CPK colors (easily found online)
+	• Ball-and-Stick Model: You must represent the ligand using the Ball-and-Stick
+	  model:
+		◦ Atoms are represented as spheres (balls)
+		◦ Bonds are represented as cylinders (sticks) connecting atoms
+		◦ Sphere sizes should be proportional to atomic radii (or uniform for simplicity)
+		◦ Bond cylinders should be thinner than atom spheres
+	• Atom Information: When a user taps/clicks on an atom, display information
+	  about it:
+		◦ Show a tooltip, popup, or overlay
+		◦ Display at minimum: the atom’s element symbol (C, H, O, N, etc.)
+		◦ Optionally: atom name, residue information, coordinates
+		◦ The tooltip/popup should disappear when the user taps anywhere else on the
+		  screen or taps another atom
+	• Gesture Controls: The user must be able to interact with the 3D model:
+		◦ Rotation: Drag/swipe to rotate the molecule around its center
+		◦ Zoom: Pinch gesture to zoom in/out
+		◦ Pan: Two-finger drag to pan the camera (optional but recommended)
+	  All gestures should be smooth and responsive (60 FPS target).
+	• Share Functionality: Include a "Share" button that allows users to:
+		◦ Capture a screenshot of the current 3D view
+		◦ Share it via the platform’s native share sheet
+		◦ Share to social media, messaging apps, email, or save to photos
+	• Camera and Lighting: Set up appropriate camera positioning and lighting so
+	  the molecule is clearly visible and aesthetically pleasing:
+		◦ Initial camera position should show the entire molecule
+		◦ Lighting should highlight the 3D structure (avoid flat appearance)
+		◦ Consider using multiple light sources for better depth perception
+	• The 3D rendering must be smooth and performant. No lag, stuttering, or frame
+	  drops during interaction.
