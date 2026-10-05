@@ -1,11 +1,13 @@
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
+import {View} from 'react-native';
 import {GLView, ExpoWebGLRenderingContext} from 'expo-gl';
 import * as THREE from 'three';
 
-import {Molecule} from '../../types/molecule';
+import {Molecule, Atom} from '../../types/molecule';
 import {createAtomsView, disposeAtomsView} from './AtomsViews';
 import {createBondsView, disposeBondsView} from './BondsViews';
 import GestureControls from './GestureControls';
+import AtomInformation from './AtomInformation';
 
 type MoleculeViewProps = {
     molecule: Molecule;
@@ -17,6 +19,8 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 {
 	const frameRef = useRef<number | null>(null);
 	const cleanupRef = useRef<(() => void) | null>(null);
+	const atomsGroupRef = useRef<THREE.Group | null>(null);
+	const [selectedAtom, setSelectedAtom] = useState<Atom | null>(null);
 
 	/*
 	* References used by the gesture controls.
@@ -40,6 +44,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 
 			moleculeGroupRef.current = null;
 			cameraRef.current = null;
+			atomsGroupRef.current = null;
 		};
 	}, []);
 
@@ -106,6 +111,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 
 		const atomsView = createAtomsView(molecule, center);
 		moleculeGroup.add(atomsView.group);
+		atomsGroupRef.current = atomsView.group;
 
 		const bondsView = createBondsView(molecule, center);
 		moleculeGroup.add(bondsView);
@@ -166,6 +172,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 
 			moleculeGroupRef.current = null;
 			cameraRef.current = null;
+			atomsGroupRef.current = null;
 		};
 	}
 
@@ -208,9 +215,33 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		camera.position.z = THREE.MathUtils.clamp(camera.position.z / scale, Math.max(radius * 0.5, 0.5), Math.max(radius * 5, 5));
 	}
 
+	function handleTap(x: number, y: number, width: number, height: number)
+	{
+		const camera = cameraRef.current;
+		const atomsGroup = atomsGroupRef.current;
+		if (!camera || !atomsGroup)
+			return;
+
+		// Coordenadas del toque -> NDC (-1..1)
+		const ndc = new THREE.Vector2((x / width) * 2 - 1, -(y / height) * 2 + 1);
+
+		const raycaster = new THREE.Raycaster();
+		raycaster.setFromCamera(ndc, camera);
+
+		const hits = raycaster.intersectObjects(atomsGroup.children, false);
+
+		// Si no toca ningún átomo -> null -> la tarjeta desaparece
+		// Si toca otro átomo -> se sustituye
+		setSelectedAtom(hits.length > 0 ? (hits[0].object.userData.atom as Atom) : null);
+	}
+
 	return (
-		<GestureControls onRotate={rotateMolecule} onZoom={zoomCamera}>
-			<GLView style={{flex: 1}} onContextCreate={onContextCreate} />
-		</GestureControls>
+		<View style={{flex: 1}}>
+			<GestureControls onRotate={rotateMolecule} onZoom={zoomCamera} onTap={handleTap}>
+				<GLView style={{flex: 1}} onContextCreate={onContextCreate} />
+			</GestureControls>
+
+			<AtomInformation atom={selectedAtom} />
+		</View>
 	);
 }

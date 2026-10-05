@@ -33,6 +33,8 @@ export function createAtomsView(molecule: Molecule, center: THREE.Vector3,): {gr
 			atom.z - center.z,
 		);
 
+		mesh.userData.atom = atom;
+
 		group.add(mesh);
 
 		radius = Math.max(radius, mesh.position.length());
