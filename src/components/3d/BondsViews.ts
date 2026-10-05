@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from 'three'; //importamos todos los exports de three
 
 import {Molecule, Atom, Bond} from '../../types/molecule';
 
@@ -11,7 +11,7 @@ function createBondCylinder(start: THREE.Vector3, end: THREE.Vector3, radius: nu
 
 	const geometry = new THREE.CylinderGeometry(radius, radius, length, 12);
 
-	const mesh = new THREE.Mesh(geometry, material);
+	const mesh = new THREE.Mesh(geometry, material); //mesh es el conjunto de la geometria y el material(color)
 
 	const midpoint = new THREE.Vector3()
 		.addVectors(start, end)
@@ -19,16 +19,9 @@ function createBondCylinder(start: THREE.Vector3, end: THREE.Vector3, radius: nu
 
 	mesh.position.copy(midpoint);
 
-	/*
-	 * CylinderGeometry está creado inicialmente apuntando
-	 * sobre el eje Y.
-	 *
-	 * Lo rotamos para que el eje Y apunte desde start hasta end.
-	 */
+	// CylinderGeometry siempre crea apuntando al eje Y, lo rotamos con quaternion
 	const quaternion = new THREE.Quaternion();
-
 	quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize());
-
 	mesh.quaternion.copy(quaternion);
 
 	return mesh;
@@ -36,10 +29,9 @@ function createBondCylinder(start: THREE.Vector3, end: THREE.Vector3, radius: nu
 
 function getPerpendicularVector(direction: THREE.Vector3): THREE.Vector3
 {
-	const reference =
-		Math.abs(direction.y) < 0.9
-			? new THREE.Vector3(0, 1, 0)
-			: new THREE.Vector3(1, 0, 0);
+	const reference = Math.abs(direction.y) < 0.9
+		? new THREE.Vector3(0, 1, 0)
+		: new THREE.Vector3(1, 0, 0);
 
 	return new THREE.Vector3()
 		.crossVectors(direction, reference)
@@ -52,7 +44,7 @@ function createSingleBond(group: THREE.Group, atom1: Atom, atom2: Atom, material
 		atom1.x - center.x,
 		atom1.y - center.y,
 		atom1.z - center.z,
-	).add(offset);
+	).add(offset); //desplazamos los resultados de las coordenadas para hacer los double bonds.Si en la llamada de la funcion no ponemos ningun offset no se desplaza nada(seran los single bonds)
 
 	const end = new THREE.Vector3(
 		atom2.x - center.x,
@@ -90,21 +82,16 @@ function createBond(group: THREE.Group, bond: Bond, atom1: Atom, atom2: Atom, ce
 		return;
 	}
 
-	/*
-	 * Para enlaces dobles y triples creamos varios
-	 * cilindros paralelos ligeramente desplazados.
-	 */
 	const perpendicular = getPerpendicularVector(direction);
-
 	const offsetDistance = 0.12;
-
+	// Bond double
 	if (bond.order === 2)
 	{
 		createSingleBond(group, atom1, atom2, material, center, perpendicular.clone().multiplyScalar(offsetDistance));
 		createSingleBond(group, atom1, atom2, material, center, perpendicular.clone().multiplyScalar(-offsetDistance));
 		return;
 	}
-
+	// Bond triple
 	if (bond.order === 3)
 	{
 		createSingleBond(group, atom1, atom2, material, center);
@@ -113,30 +100,24 @@ function createBond(group: THREE.Group, bond: Bond, atom1: Atom, atom2: Atom, ce
 		return;
 	}
 
-	/*
-	 * AROM = 1.5.
-	 *
-	 * De momento lo representamos como un enlace simple.
-	 * Más adelante podemos hacer una representación
-	 * específica para enlaces aromáticos.
-	 */
+	// los arom(1.5) les hacemos como singles para una representacion mas sencilla
 	createSingleBond(group, atom1, atom2, material, center);
 }
 
 export function createBondsView(molecule: Molecule, center: THREE.Vector3): THREE.Group
 {
-	const group = new THREE.Group();
+	const group = new THREE.Group(); //group va a representar todos los bonds, tanto los cilindros como la materia
 
 	const material = new THREE.MeshStandardMaterial({
 		color: '#707070',
 	});
 
-	const atomsById = new Map<string, Atom>();
+	const atomsById = new Map<string, Atom>(); //mapa con el id respecto a toda la info de atom
 
 	for (const atom of molecule.atoms)
 		atomsById.set(atom.id, atom);
 
-	for (const bond of molecule.bonds)
+	for (const bond of molecule.bonds) //recorremos los bonds sacando los atomos y creando el/los bond que los uno
 	{
 		const atom1 = atomsById.get(bond.atom1);
 		const atom2 = atomsById.get(bond.atom2);
@@ -148,16 +129,16 @@ export function createBondsView(molecule: Molecule, center: THREE.Vector3): THRE
 	return group;
 }
 
-export function disposeBondsView(group: THREE.Group): void
+export function disposeBondsView(group: THREE.Group): void //liberacion de memoria los recursos 3D de Three.js
 {
-	group.traverse(object =>
+	group.traverse(object => //traverse recorre todos los objetos hijos que hay dentro del grupo
 	{
 		if (!(object instanceof THREE.Mesh))
 			return;
 
-		object.geometry.dispose();
+		object.geometry.dispose(); //Liberamos la geometría del mesh
 
 		if (object.material instanceof THREE.Material)
-			object.material.dispose();
+			object.material.dispose(); //Liberamos la materia del mesh
 	});
 }
