@@ -129,5 +129,4 @@ VI.1 Application Icon and Launch Screen
 	  forever. It should be a clean, branded splash screen.
 
 
-- ESCRIBIR ALGUNOS COMENTARIOS ACLARATORIOS
 - BONUS
