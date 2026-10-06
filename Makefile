@@ -22,7 +22,6 @@ build-goinfre: ligands
 		--exclude .git \
 		--exclude .expo \
 		./ $(GOINFRE)/
-
 	cd $(GOINFRE) && npm install
 
 # --------------------------------------------------

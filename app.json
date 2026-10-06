@@ -5,11 +5,19 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "splash":
+    {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1A1038"
+    },
     "userInterfaceStyle": "light",
-    "ios": {
+    "ios":
+    {
       "supportsTablet": true
     },
-    "android": {
+    "android":
+    {
       "adaptiveIcon": {
         "backgroundColor": "#1A1038",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -19,13 +27,15 @@
       "predictiveBackGestureEnabled": false,
       "package": "com.victordiezcuesta.swiftyproteins"
     },
-    "web": {
+    "web":
+    {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-secure-store",
       "expo-asset",
-      "expo-sharing"
+      "expo-sharing",
+      "expo-splash-screen"
     ]
   }
 }

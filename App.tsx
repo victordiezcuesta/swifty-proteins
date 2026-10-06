@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 import {Alert, AppState, AppStateStatus} from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
 
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
@@ -14,6 +15,8 @@ import {Molecule} from './src/types/molecule';
 import {LogBox} from 'react-native';
 LogBox.ignoreLogs(['THREE.WebGLRenderer: WebGL 1 support was deprecated']); //ignoramos el warning para que no nos salga porque hemos bajado la version de three porque no era compatible
 
+SplashScreen.preventAutoHideAsync();
+
 type Screen = 'login' | 'register' | 'list' | 'ligand';
 
 export default function App()
@@ -26,6 +29,24 @@ export default function App()
 	const [ligandMolecule, setLigandMolecule] = useState<Molecule | null>(null);
 
 	const appState = useRef<AppStateStatus>(AppState.currentState); //guardamos el valor que persiste entre los renders pero no provoca una renderizacion
+
+
+	useEffect(() => //este effect le queremos para aguantar 2 segundos el Launch Screen
+	{
+		const startTime = Date.now();
+
+		async function hideSplash()
+		{
+			const elapsed = Date.now() - startTime;
+			const remaining = Math.max(0, 2000 - elapsed);
+
+			await new Promise(resolve => setTimeout(resolve, remaining));
+
+			await SplashScreen.hideAsync();
+		}
+
+		hideSplash();
+	}, []);
 
 	useEffect(() =>
 	{
