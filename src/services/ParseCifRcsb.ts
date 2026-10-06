@@ -4,8 +4,7 @@ function parseAtoms(lines: string[]): Atom[]
 {
 	const atoms: Atom[] = [];
 
-	// Busca un átomo definido mediante propiedades individuales,
-	// sin loop_.
+	//buscamos primero si es un atomo simple la molecula
 	const atomProperties: Record<string, string> = {};
 
 	for (const line of lines)
@@ -16,7 +15,7 @@ function parseAtoms(lines: string[]): Atom[]
 
 		const values = trimmedLine.split(/\s+/);
 		if (values.length >= 2)
-			atomProperties[values[0]] = values[1];
+			atomProperties[values[0]] = values[1]; //atomProperties["_chem_comp_atom.atom_id"] = "C1";
 	}
 
 	if (Object.keys(atomProperties).length > 0)
@@ -59,7 +58,7 @@ function parseAtoms(lines: string[]): Atom[]
 		return atoms;
 	}
 
-	// Si no hay propiedades individuales, buscamos el formato loop_.
+	// Si no es un atomo individual buscamos la tabla loop
 	for (let i = 0; i < lines.length; i++)
 	{
 		if (lines[i].trim() !== 'loop_')
@@ -68,7 +67,7 @@ function parseAtoms(lines: string[]): Atom[]
 		const headers: string[] = [];
 
 		let j = i + 1;
-		while (j < lines.length)
+		while (j < lines.length) //contamos j para saber el tamaño de la tabla
 		{
 			const header = lines[j].trim();
 			if (!header.startsWith('_'))
@@ -81,6 +80,7 @@ function parseAtoms(lines: string[]): Atom[]
 		if (!headers.some(header => header.startsWith('_chem_comp_atom.')))
 			continue;
 
+		//posiciones de columnas, primera columna, segunda,...
 		const atomIdIndex = headers.indexOf('_chem_comp_atom.atom_id');
 		const elementIndex = headers.indexOf('_chem_comp_atom.type_symbol');
 
@@ -121,6 +121,7 @@ function parseAtoms(lines: string[]): Atom[]
 			if (values.length < headers.length)
 				throw new Error(`Invalid CIF: incomplete atom data at line ${i + 1}.`);
 
+			//valores de cada atomo
 			const atomId = values[atomIdIndex];
 			const element = values[elementIndex];
 
