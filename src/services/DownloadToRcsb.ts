@@ -13,13 +13,13 @@ export async function fetchLigand(ligand: string): Promise<string>
 
 	const timeout = setTimeout(() =>
 	{
-		controller.abort();
+		controller.abort(); //Si pasan 10 segundos llama a controller.abort
 	}, REQUEST_TIMEOUT);
 
 	try
 	{
 		const response = await fetch(`${RCSB_URL}/${cleanLigand}.cif`,
-			{signal: controller.signal},
+			{signal: controller.signal}, //fecth está controlada por el controller, si hace abort(), cancela esta petición
 		);
 
 		if (response.status === 404)
