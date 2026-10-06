@@ -12,13 +12,13 @@ type GestureControlsProps = {
     children: ReactNode;
     onRotate: (dx: number, dy: number) => void;
     onZoom: (scale: number) => void;
-    onTap?: (x: number, y: number, width: number, height: number) => void;
+    onTap?: (x: number, y: number, width: number, height: number) => void; //el ? es que es opcional
 };
 
 const TAP_MAX_MOVE = 10;   // px
 const TAP_MAX_TIME = 300;  // ms
 
-function copyTouches(touches: readonly TouchPoint[]): TouchPoint[]
+function copyTouches(touches: readonly TouchPoint[]): TouchPoint[] //guardamos una copia de la posicion de los deddos
 {
     return touches.map(touch => ({pageX: touch.pageX, pageY: touch.pageY}));
 }
@@ -34,19 +34,23 @@ export default function GestureControls({children, onRotate, onZoom, onTap}: Ges
 
     const responder = useRef(
         PanResponder.create({
-            onStartShouldSetPanResponder: () => true,
-            onMoveShouldSetPanResponder: () => true,
+            onStartShouldSetPanResponder: () => true, //Cuando empieza un toque(pan) quiero que este PanResponder se haga responsable del gesto
 
-            onPanResponderGrant: event =>
+            onMoveShouldSetPanResponder: () => true, //Si el usuario empieza a mover el dedo, PanResponder se haga responsable del gesto
+
+            onPanResponderGrant: event => //El gesto acaba de empezar | event = contiene información del evento
             {
                 previousTouches.current = copyTouches(event.nativeEvent.touches);
 
                 const n = event.nativeEvent;
+
                 tap.current = {
-                    x: n.locationX, y: n.locationY,
-                    startX: n.pageX, startY: n.pageY,
+                    x: n.locationX, //donde se producjo el pan
+                    y: n.locationY,
+                    startX: n.pageX, //cuanto se han movido los dedos
+                    startY: n.pageY,
                     time: Date.now(),
-                    valid: n.touches.length === 1,
+                    valid: n.touches.length === 1, //event.nativeEvent.touches es una lista de los dedos que están tocando actualmente.
                 };
             },
 
@@ -58,32 +62,31 @@ export default function GestureControls({children, onRotate, onZoom, onTap}: Ges
                 if (touches.length === 0)
                     return;
 
-                // 1) Invalidar el tap (independiente de rotar/zoom)
-                if (touches.length > 1 || Math.hypot(touches[0].pageX - tap.current.startX, touches[0].pageY - tap.current.startY) > TAP_MAX_MOVE)
+                if (touches.length > 1 || Math.hypot(touches[0].pageX - tap.current.startX, touches[0].pageY - tap.current.startY) > TAP_MAX_MOVE) //invalidamos el tap si nos desplzamos mas de 10px
                     tap.current.valid = false;
 
-                // 2) Si cambia el número de dedos, reiniciamos la referencia
-                if (touches.length !== previous.length)
+                if (touches.length !== previous.length) //Si cambia el número de dedos, reiniciamos la referencia
                 {
                     previousTouches.current = copyTouches(touches);
                     return;
                 }
 
-                // 3) Rotar o hacer zoom
-                if (touches.length === 1)
+                if (touches.length === 1) //rotamos
                 {
                     onRotate(
                         touches[0].pageX - previous[0].pageX,
                         touches[0].pageY - previous[0].pageY,
                     );
                 }
-                else
+                else //hacemos zoom
                 {
+                    //calculamos la distancia entre los dos dedos ahora mismo
                     const currentDistance = Math.hypot(
                         touches[0].pageX - touches[1].pageX,
                         touches[0].pageY - touches[1].pageY,
                     );
 
+                    // calculamos la distancia que habia entre los dos dedos en el evento anterior
                     const previousDistance = Math.hypot(
                         previous[0].pageX - previous[1].pageX,
                         previous[0].pageY - previous[1].pageY,
@@ -96,16 +99,21 @@ export default function GestureControls({children, onRotate, onZoom, onTap}: Ges
                 previousTouches.current = copyTouches(touches);
             },
 
-            onPanResponderRelease: () =>
+            onPanResponderRelease: () => //el usuario ah terminado el pan, es decir ha levantado el dedo
             {
                 previousTouches.current = [];
 
-                const t = tap.current;
+                const t = tap.current; //recuperamos toda la informacion
                 if (t.valid && Date.now() - t.time < TAP_MAX_TIME)
                     onTapRef.current?.(t.x, t.y, size.current.width, size.current.height);
                 t.valid = false;
             },
-            onPanResponderTerminate: () => { previousTouches.current = []; tap.current.valid = false; },
+
+            onPanResponderTerminate: () =>//el pan fue interrumpido o cancelado
+            {
+                previousTouches.current = [];
+                tap.current.valid = false;
+            },
         }),
     ).current;
 
