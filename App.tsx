@@ -18,29 +18,29 @@ type Screen = 'login' | 'register' | 'list' | 'ligand';
 
 export default function App()
 {
-	const [screen, setScreen] = useState<Screen>('login');
+	const [screen, setScreen] = useState<Screen>('login'); //iniciamos la app con login siempre
 	const [selectedLigand, setSelectedLigand] = useState<string | null>(null);
 	const [ligandCif, setLigandCif] = useState<string | null>(null);
 	const [ligandLoading, setLigandLoading] = useState(false);
 	const [ligandError, setLigandError] = useState<string | null>(null);
 	const [ligandMolecule, setLigandMolecule] = useState<Molecule | null>(null);
 
-	const appState = useRef<AppStateStatus>(AppState.currentState);
+	const appState = useRef<AppStateStatus>(AppState.currentState); //guardamos el valor que persiste entre los renders pero no provoca una renderizacion
 
 	useEffect(() =>
 	{
-		const subscription = AppState.addEventListener('change', nextAppState =>
+		const subscription = AppState.addEventListener('change', nextAppState => //React Native avisa cada vez que cambie el estado de la aplicación
 		{
 			const wasBackgrounded = appState.current === 'background' || appState.current === 'inactive';
-			if (wasBackgrounded && nextAppState === 'active')
+			if (wasBackgrounded && nextAppState === 'active') //si venimos de nuestro escriorio del movil volvemos al login
 				setScreen('login');
 
-			appState.current = nextAppState;
+			appState.current = nextAppState; //actualizamos el estado
 		});
 
 		return () =>
 		{
-			subscription.remove();
+			subscription.remove(); //limpiamos
 		};
 	}, []);
 
@@ -79,7 +79,7 @@ export default function App()
 
 	async function handleSelectLigand(id: string)
 	{
-		setSelectedLigand(id);
+		setSelectedLigand(id); //guardmoa el id del ligand seleccionado
 		setLigandCif(null);
 		setLigandError(null);
 		setLigandLoading(true);
