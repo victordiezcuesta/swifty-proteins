@@ -20,7 +20,7 @@ export default function LigandListScreen({onSelectLigand, onLogout}: LigandListS
 	const [query, setQuery] = useState('');
 	const mounted = useRef(true);
 
-	const reload = useCallback(() =>
+	const reload = useCallback(() => //React guarda esta función y reutiliza la misma función mientras no cambien sus dependencias
 	{
 		setLoading(true);
 		setError(null);

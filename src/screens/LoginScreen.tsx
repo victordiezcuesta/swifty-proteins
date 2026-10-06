@@ -7,7 +7,7 @@ import {biometricLogin, login} from '../services/Authentification';
 import {styles} from '../styles/LoginScreen.styles';
 
 type LoginScreenProps = {
-	onLoginSuccess?: () => void;
+	onLoginSuccess?: () => void; //lo queremos para avisar a app.tsx que nos hemos terminado de loguear
 	onRegisterPress?: () => void;
 };
 
