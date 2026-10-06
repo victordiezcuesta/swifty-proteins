@@ -26,14 +26,14 @@ export function createAtomsView(molecule: Molecule, center: THREE.Vector3,): {gr
 			materials.set(atom.element, material);
 		}
 
-		const mesh = new THREE.Mesh(sphereGeometry, material,);
+		const mesh = new THREE.Mesh(sphereGeometry, material);
 		mesh.position.set(
 			atom.x - center.x,
 			atom.y - center.y,
 			atom.z - center.z,
 		);
 
-		mesh.userData.atom = atom;
+		mesh.userData.atom = atom; //guardamos el atomo para despues sacar info al pulsar
 
 		group.add(mesh);
 
