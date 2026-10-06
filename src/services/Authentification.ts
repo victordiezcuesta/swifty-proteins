@@ -6,10 +6,9 @@ import bcrypt from 'bcryptjs';
 import { User } from '../types/auth';
 
 const USER_KEY = 'swifty_proteins_user';
-const BCRYPT_COST = 10;
+const BCRYPT_COST = 10; //hace 2^10 operaciones para hasear password
 
-// React Native no trae un generador aleatorio que bcryptjs detecte solo
-bcrypt.setRandomFallback((len: number) => Array.from(Crypto.getRandomBytes(len)));
+bcrypt.setRandomFallback((len: number) => Array.from(Crypto.getRandomBytes(len))); //le damos una funcion de bytes aleatorios y lo metemos en un array, porque react native no trae una funcion randorizada que nos valga
 
 function isValidUser(value: any): value is User
 {
@@ -53,7 +52,7 @@ export async function register(username: string, password: string): Promise<void
 	if (!isValidPassword(password))
 		throw new Error('Password must contain at least 8 characters, including a number, an uppercase letter, a lowercase letter, and a special character.');
 
-	if (new TextEncoder().encode(password).length > 72)
+	if (new TextEncoder().encode(password).length > 72) //bcrypt solo utiliza los primeros 72 bytes de password para el hash
 		throw new Error('Password must be at most 72 bytes long.');
 
 	const existingUser = await getUser();
@@ -68,7 +67,7 @@ export async function register(username: string, password: string): Promise<void
 		algorithm: 'bcrypt',
 	};
 
-	await SecureStore.setItemAsync(USER_KEY, JSON.stringify(user));
+	await SecureStore.setItemAsync(USER_KEY, JSON.stringify(user)); //guardamos los datos en el movil y con el identificador en "la tabla" USER_KEY y lo guardamos como json
 }
 
 export async function getUser(): Promise<User | null>

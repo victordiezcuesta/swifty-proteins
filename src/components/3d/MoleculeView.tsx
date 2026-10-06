@@ -42,7 +42,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		return () =>
 		{
 			if (frameRef.current !== null)
-			cancelAnimationFrame(frameRef.current);
+				cancelAnimationFrame(frameRef.current);
 
 			cleanupRef.current?.();
 
