@@ -6,7 +6,7 @@ import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import LigandListScreen from './src/screens/LigandListScreen';
 import LigandScreen from './src/screens/LigandScreen';
-//import ThreeTestScreen from './src/screens/ThreeTestScreen';
+import LaunchScreen from './src/screens/LaunchScreen';
 
 import {fetchLigand} from './src/services/DownloadToRcsb';
 import {parseCif} from './src/services/ParseCifRcsb';
@@ -27,25 +27,24 @@ export default function App()
 	const [ligandLoading, setLigandLoading] = useState(false);
 	const [ligandError, setLigandError] = useState<string | null>(null);
 	const [ligandMolecule, setLigandMolecule] = useState<Molecule | null>(null);
+	const [showLaunchScreen, setShowLaunchScreen] = useState(true);
 
 	const appState = useRef<AppStateStatus>(AppState.currentState); //guardamos el valor que persiste entre los renders pero no provoca una renderizacion
 
-
-	useEffect(() => //este effect le queremos para aguantar 2 segundos el Launch Screen
+	useEffect(() =>
 	{
-		const startTime = Date.now();
-
-		async function hideSplash()
+		async function startApp()
 		{
-			const elapsed = Date.now() - startTime;
-			const remaining = Math.max(0, 2000 - elapsed);
+			await new Promise(resolve => setTimeout(resolve, 500)); // El splash nativo permanece visible durante 500 ms
 
-			await new Promise(resolve => setTimeout(resolve, remaining));
+			await SplashScreen.hideAsync(); // Ocultamos el splash nativo y mostramos LaunchScreen
 
-			await SplashScreen.hideAsync();
+			await new Promise(resolve => setTimeout(resolve, 4000)); // LaunchScreen permanece visible durante 4 segundos
+
+			setShowLaunchScreen(false); // Finalmente mostramos el Login
 		}
 
-		hideSplash();
+		startApp();
 	}, []);
 
 	useEffect(() =>
@@ -64,6 +63,11 @@ export default function App()
 			subscription.remove(); //limpiamos
 		};
 	}, []);
+
+	if (showLaunchScreen)
+	{
+		return <LaunchScreen />;
+	}
 
 	if (screen === 'register')
 	{
