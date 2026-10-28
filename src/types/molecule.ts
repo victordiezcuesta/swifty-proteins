@@ -16,3 +16,7 @@ export type Molecule = {
 	atoms: Atom[];
 	bonds: Bond[];
 };
+
+export type BondInfo = Bond & {
+	length: number; // en angstroms(1 Å = 10⁻¹⁰ m)
+};

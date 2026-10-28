@@ -1,6 +1,6 @@
 import * as THREE from 'three'; //importamos todos los exports de three
 
-import {Molecule, Atom, Bond} from '../../types/molecule';
+import {Molecule, Atom, Bond, BondInfo} from '../../types/molecule';
 
 const BOND_RADIUS = 0.08;
 
@@ -117,14 +117,25 @@ export function createBondsView(molecule: Molecule, center: THREE.Vector3): THRE
 	for (const atom of molecule.atoms)
 		atomsById.set(atom.id, atom);
 
-	for (const bond of molecule.bonds) //recorremos los bonds sacando los atomos y creando el/los bond que los uno
+	for (const bond of molecule.bonds) //recorremos los bonds sacando los atomos y creando los bond que los uno
 	{
 		const atom1 = atomsById.get(bond.atom1);
 		const atom2 = atomsById.get(bond.atom2);
 		if (!atom1 || !atom2)
 			continue;
 
+		const firstNewChild = group.children.length; //group es el THREE.Group donde van todos los cilindros de enlaces, y group.children es el array con los cilindros que ya se han añadido. Su length es cuántos hay antes de procesar este enlace
+
 		createBond(group, bond, atom1, atom2, center, material);
+
+		const info: BondInfo = {
+			...bond,
+			length: Math.hypot(atom1.x - atom2.x, atom1.y - atom2.y, atom1.z - atom2.z), //calcula √(a² + b² + c²), que es la fórmula de distancia entre dos puntos en 3D
+		};
+
+		//un double son 2 cilindros y un triple 3: todos los nuevos llevan la misma info
+		for (let i = firstNewChild; i < group.children.length; i++)
+			group.children[i].userData.bond = info;
 	}
 	return group;
 }

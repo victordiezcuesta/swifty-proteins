@@ -3,11 +3,12 @@ import {Alert, Text, TouchableOpacity, View} from 'react-native';
 import {GLView, ExpoWebGLRenderingContext} from 'expo-gl'; //ExpoWebGLRenderingContext=contexto gráfico OpenGL que proporciona Expo
 import * as THREE from 'three';
 
-import {Molecule, Atom} from '../../types/molecule';
+import {Molecule, Atom, BondInfo} from '../../types/molecule';
 import {createAtomsView, disposeAtomsView} from './AtomsViews';
 import {createBondsView, disposeBondsView} from './BondsViews';
 import GestureControls from './GestureControls';
 import AtomInformation from './AtomInformation';
+import BondInformation from './BondInformation';
 import {shareMolecule} from '../../services/Share';
 import {styles} from '../../styles/MoleculeView.styles';
 
@@ -21,6 +22,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 {
 	const frameRef = useRef<number | null>(null); //varables/puntero que modificamos sin provocar un nuevo render
 	const cleanupRef = useRef<(() => void) | null>(null);
+	const bondsGroupRef = useRef<THREE.Group | null>(null);
 	const atomsGroupRef = useRef<THREE.Group | null>(null);
 	const moleculeGroupRef = useRef<THREE.Group | null>(null);
 	const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
@@ -29,6 +31,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 
 	const [sharing, setSharing] = useState(false); //useState variables que provocan nueva render
 	const [selectedAtom, setSelectedAtom] = useState<Atom | null>(null);
+	const [selectedBond, setSelectedBond] = useState<BondInfo | null>(null);
  
 	useEffect(() =>
 	{
@@ -101,12 +104,11 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		atomsGroupRef.current = atomsView.group;
 		const bondsView = createBondsView(molecule, center);
 		moleculeGroup.add(bondsView);
+		bondsGroupRef.current = bondsView;
 
 		const radius = atomsView.radius;
 
-		/*
-		* Camera
-		*/
+		//Camera
 		const aspect = width / height; //lo hacmos para que la molecula no salga deformada
 
 		const camera = new THREE.PerspectiveCamera(FOV, aspect, 0.1, 1000);
@@ -182,7 +184,9 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 	{
 		const camera = cameraRef.current;
 		const atomsGroup = atomsGroupRef.current;
-		if (!camera || !atomsGroup)
+		const bondsGroup = bondsGroupRef.current;
+
+		if (!camera || !atomsGroup || !bondsGroup)
 			return;
 
 		// calculamos las coordenadas del toque mediante ndc que es -1x +1x -1y +1y
@@ -191,10 +195,13 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		const raycaster = new THREE.Raycaster();//ennviamos un rayo para ver que atomo hemos tocado
 		raycaster.setFromCamera(ndc, camera);
 
-		const hits = raycaster.intersectObjects(atomsGroup.children, false);
+		const hits = raycaster.intersectObjects([...atomsGroup.children, ...bondsGroup.children], false); //lanzamos el rayo contra átomos y bonds a la vez, hits[0] es lo más cercano a la cámara
 
-		// Comprueba si el rayo ha intersectado alguno de los objetos que están dentro de atomsGroup
-		setSelectedAtom(hits.length > 0 ? (hits[0].object.userData.atom as Atom) : null);
+		const data = hits.length > 0 ? hits[0].object.userData : null; // Comprueba si el rayo ha intersectado alguno de los objetos que están dentro de atomsGroup
+
+		//si seleccionamos un atomo nos da la info del atomo y si pulsamos un bond cierra la info del atomo y abre el del bond y viceversa
+		setSelectedAtom((data?.atom as Atom) ?? null);
+		setSelectedBond((data?.bond as BondInfo) ?? null);
 	}
 
 	async function handleShare()
@@ -230,6 +237,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 			</GestureControls>
 
 			<AtomInformation atom={selectedAtom} />
+			<BondInformation bond={selectedBond} />
 
 			<TouchableOpacity
 				style={styles.shareButton}

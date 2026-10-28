@@ -1,4 +1,4 @@
-.PHONY: deps ligands build-goinfre android-sdk install expo eval cluster clean re
+.PHONY: deps ligands build-goinfre android-sdk install-cluster expo eval-cluster cluster clean re
 
 GOINFRE := /goinfre/$(USER)/swifty-proteins
 export ANDROID_HOME := /goinfre/$(USER)/Android/Sdk
@@ -22,9 +22,7 @@ build-goinfre: ligands
 		./ $(GOINFRE)/
 	rm -rf $(GOINFRE)/android
 	cd $(GOINFRE) && npm install
-# --------------------------------------------------
-# SDK
-# --------------------------------------------------
+
 android-sdk:
 	@if [ ! -d "$(ANDROID_HOME)/platform-tools" ] || [ ! -d "$(ANDROID_HOME)/cmake/3.22.1" ]; then \
 		echo ">> Installing Android SDK in goinfre..."; \
@@ -39,21 +37,17 @@ android-sdk:
 		$(ANDROID_HOME)/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0" "ndk;27.1.12297006" "cmake;3.22.1"; \
 	fi
 
-# 1. Compila e instala la app nativa en el móvil (USB). Solo hace falta una vez.
-install: android-sdk build-goinfre
+install-cluster: android-sdk build-goinfre
 	cd $(GOINFRE) && npx expo run:android --device --no-bundler
 
-# 2. Expo Go: escaneas el QR con la app de Expo (móvil y PC en la misma red)
 expo: ligands
 	npx expo start --go -c
 
-# 3. Servidor para la app instalada, móvil por USB (en casa)
 eval: ligands
 	adb reverse tcp:8081 tcp:8081
 	npx expo start --localhost -c
 
-# 4. Igual que eval, pero en el cluster: usa el SDK y la copia de goinfre
-cluster: android-sdk build-goinfre
+eval-cluster: android-sdk build-goinfre
 	adb reverse tcp:8081 tcp:8081
 	cd $(GOINFRE) && npx expo start --localhost -c
 
