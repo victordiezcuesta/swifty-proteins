@@ -12,15 +12,14 @@ type LoginScreenProps = {
 	onRegisterPress?: () => void;
 };
 
-const theme = useTheme();
-const styles = useMemo(() => createStyles(theme), [theme]);
-
 export default function LoginScreen({onLoginSuccess, onRegisterPress}: LoginScreenProps)
 {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [biometricsAvailable, setBiometricsAvailable] = useState(false);
+	const theme = useTheme();
+	const styles = useMemo(() => createStyles(theme), [theme]);
 
 	useEffect(() =>
 	{

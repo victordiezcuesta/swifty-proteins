@@ -15,11 +15,11 @@ type LigandScreenProps = {
 	molecule: Molecule | null;
 };
 
-const theme = useTheme();
-const styles = useMemo(() => createStyles(theme), [theme]);
-
 export default function LigandScreen({ligandId, cif, loading, error, onBack, molecule}: LigandScreenProps)
 {
+	const theme = useTheme();
+	const styles = useMemo(() => createStyles(theme), [theme]);
+
 	if (loading)
 	{
 		return (

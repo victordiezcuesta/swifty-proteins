@@ -12,8 +12,6 @@ type LigandListScreenProps = {
 };
 
 const ROW_HEIGHT = 56;
-const theme = useTheme();
-const styles = useMemo(() => createStyles(theme), [theme]);
 
 export default function LigandListScreen({onSelectLigand, onLogout}: LigandListScreenProps)
 {
@@ -22,6 +20,8 @@ export default function LigandListScreen({onSelectLigand, onLogout}: LigandListS
 	const [error, setError] = useState<string | null>(null);
 	const [query, setQuery] = useState('');
 	const mounted = useRef(true);
+	const theme = useTheme();
+	const styles = useMemo(() => createStyles(theme), [theme]);
 
 	const reload = useCallback(() => //React guarda esta función y reutiliza la misma función mientras no cambien sus dependencias
 	{

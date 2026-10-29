@@ -5,7 +5,7 @@ import {Theme} from './theme';
 export const createStyles = (t: Theme) => StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: 't.background',
+		backgroundColor: t.background,
 	},
 
 	centered: {
@@ -25,7 +25,7 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 	title: {
 		fontSize: 26,
 		fontWeight: '700',
-		color: 't.text',
+		color: t.text,
 	},
 
 	logout: {
@@ -61,7 +61,7 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 		borderWidth: 1,
 		borderColor: '#D5DADF',
 		borderRadius: 10,
-		backgroundColor: 't.surface',
+		backgroundColor: t.surface,
 		fontSize: 16,
 	},
 
@@ -71,19 +71,19 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 		paddingHorizontal: 16,
 		borderBottomWidth: StyleSheet.hairlineWidth,
 		borderBottomColor: '#D5DADF',
-		backgroundColor: 't.surface',
+		backgroundColor: t.surface,
 	},
 
 	rowText: {
 		fontSize: 17,
 		fontWeight: '600',
-		color: 't.text',
+		color: t.text,
 	},
 
 	empty: {
 		marginTop: 32,
 		textAlign: 'center',
-		color: 't.textSecondary',
+		color: t.textSecondary,
 		fontSize: 16,
 	},
 });

@@ -5,7 +5,7 @@ import {Theme} from './theme';
 export const createStyles = (t: Theme) => StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: 't.background',
+		backgroundColor: t.background,
 	},
 
 	content: {
@@ -25,7 +25,7 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 		marginTop: 8,
 		marginBottom: 32,
 		fontSize: 16,
-		color: 't.textSecondary',
+		color: t.textSecondary,
 		textAlign: 'center',
 	},
 
@@ -34,7 +34,7 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 		marginTop: 16,
 		fontSize: 15,
 		fontWeight: '600',
-		color: 't.text',
+		color: t.text,
 	},
 
 	input: {
@@ -43,7 +43,7 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 		borderColor: '#D5DADF',
 		borderRadius: 10,
 		paddingHorizontal: 14,
-		backgroundColor: 't.surface',
+		backgroundColor: t.surface,
 		fontSize: 16,
 		color: t.text,
 	},
@@ -62,7 +62,7 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 	},
 
 	buttonText: {
-		color: 't.surface',
+		color: t.surface,
 		fontSize: 16,
 		fontWeight: '700',
 	},

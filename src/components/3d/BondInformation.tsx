@@ -9,9 +9,6 @@ type BondInformationProps = {
 	bond: BondInfo | null;
 };
 
-const theme = useTheme();
-const styles = useMemo(() => createStyles(theme), [theme]);
-
 function getBondType(order: number): string
 {
 	if (order === 1)
@@ -27,6 +24,9 @@ export default function BondInformation({bond}: BondInformationProps)
 {
 	if (!bond)
 		return null;
+
+	const theme = useTheme();
+	const styles = useMemo(() => createStyles(theme), [theme]);
 
 	return (
 		<View style={styles.card} pointerEvents="none">

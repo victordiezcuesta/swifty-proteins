@@ -9,15 +9,14 @@ type RegisterScreenProps = {
 	onRegisterSuccess?: () => void;
 };
 
-const theme = useTheme();
-const styles = useMemo(() => createStyles(theme), [theme]);
-
 export default function RegisterScreen({onRegisterSuccess}: RegisterScreenProps)
 {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [loading, setLoading] = useState(false);
+	const theme = useTheme();
+	const styles = useMemo(() => createStyles(theme), [theme]);
 
 	async function handleRegister()
 	{
