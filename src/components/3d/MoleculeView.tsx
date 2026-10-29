@@ -224,6 +224,8 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		//si seleccionamos un atomo nos da la info del atomo y si pulsamos un bond cierra la info del atomo y abre el del bond y viceversa
 		setSelectedAtom((data?.atom as Atom) ?? null);
 		setSelectedBond((data?.bond as BondInfo) ?? null);
+
+		highlightElement(data?.atom ? (data.atom as Atom).element : null); //al tocar un atomo ponemos todos los atomos del mismo elemento mas grande y con mas luz
 	}
 
 	async function handleShare()
@@ -299,6 +301,24 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		{
 			group.rotation.y = startRotation; // restauramos siempre, aunque falle
 			setRecording(false);
+		}
+	}
+
+	function highlightElement(element: string | null)
+	{
+		const group = atomsGroupRef.current;
+		if (!group)
+			return;
+
+		for (const child of group.children)
+		{
+			const mesh = child as THREE.Mesh;
+			const material = mesh.material as THREE.MeshStandardMaterial;
+			const match = element !== null && (mesh.userData.atom as Atom).element === element;
+
+			mesh.scale.setScalar(match ? 1.4 : 1);   // más grande: se nota incluso con el hidrógeno blanco
+			material.emissive.set(match ? '#FFFFFF' : '#000000'); // y brilla un poco
+			material.emissiveIntensity = match ? 0.35 : 0;
 		}
 	}
 

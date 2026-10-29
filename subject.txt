@@ -121,10 +121,12 @@ COSAS QUE FALTAN:
 
 - BONUS:
 
-	• Dark Mode: Implement a complete dark mode theme that works throughout the app, including the 3D view with appropriate lighting adjustments.
+	✅ • Dark Mode: Implement a complete dark mode theme that works throughout the app, including the 3D view with appropriate lighting adjustments.
 
 	✅ • Bond Information: Display bond types (single, double, triple) and bond lengths when tapping on bonds.
 
 	✅ • Video Recording: Record a short video of the molecule rotating and share it. 
 
 	• Favorites System: Allow users to favorite ligands and maintain a favorites list for quick access.
+
+	✅ • Atom Highlighting: When hovering over or selecting an atom, highlight all atoms of the same element type.
