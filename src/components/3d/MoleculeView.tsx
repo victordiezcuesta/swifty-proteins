@@ -2,16 +2,15 @@ import {useEffect, useRef, useState} from 'react';
 import {Alert, Text, TouchableOpacity, View} from 'react-native';
 import {GLView, ExpoWebGLRenderingContext} from 'expo-gl'; //ExpoWebGLRenderingContext=contexto gráfico OpenGL que proporciona Expo
 import * as THREE from 'three';
-import {File, Paths} from 'expo-file-system';
-import {RecordingView, useViewRecorder} from 'react-native-view-recorder';
 
 import {Molecule, Atom, BondInfo} from '../../types/molecule';
-import {createAtomsView, disposeAtomsView} from './AtomsViews';
+import {createAtomsView, disposeAtomsView, ATOM_RADIUS} from './AtomsViews';
 import {createBondsView, disposeBondsView} from './BondsViews';
 import GestureControls from './GestureControls';
 import AtomInformation from './AtomInformation';
 import BondInformation from './BondInformation';
-import {shareMolecule, shareVideo} from '../../services/Share';
+import {shareMolecule} from '../../services/Share';
+import {getVdwRadius} from '../../utils/cpk';
 import {styles} from '../../styles/MoleculeView.styles';
 import {useTheme} from '../../styles/theme';
 
@@ -19,9 +18,16 @@ type MoleculeViewProps = {
     molecule: Molecule;
 };
 
+type ViewMode = 'ball-stick' | 'space-filling' | 'stick' | 'wireframe'; // NUEVO
+
+const MODES: {key: ViewMode; label: string}[] = [ // NUEVO
+	{key: 'ball-stick', label: 'Ball'},
+	{key: 'space-filling', label: 'Space'},
+	{key: 'stick', label: 'Stick'},
+	{key: 'wireframe', label: 'Wire'},
+];
+
 const FOV = 60; //campo de visión
-const VIDEO_FPS = 30;
-const VIDEO_FRAMES = 90; // 90 frames a 30 fps = 3 segundos
 
 export default function MoleculeView({molecule}: MoleculeViewProps)
 {
@@ -39,13 +45,11 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 	const ambientRef = useRef<THREE.AmbientLight | null>(null);
 	const lightRef = useRef<THREE.DirectionalLight | null>(null);
 
-	const recorder = useViewRecorder(); // objeto que controla la grabación
-	
-	const [recording, setRecording] = useState(false);
 	const [sharing, setSharing] = useState(false); //useState variables que provocan nueva render
 	const [selectedAtom, setSelectedAtom] = useState<Atom | null>(null);
 	const [selectedBond, setSelectedBond] = useState<BondInfo | null>(null);
- 
+	const [mode, setMode] = useState<ViewMode>('ball-stick'); // NUEVO
+
 	useEffect(() =>
 	{
 		return () => //limpieza al desmontar MoleculaView
@@ -217,7 +221,10 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		const raycaster = new THREE.Raycaster();//ennviamos un rayo para ver que atomo hemos tocado
 		raycaster.setFromCamera(ndc, camera);
 
-		const hits = raycaster.intersectObjects([...atomsGroup.children, ...bondsGroup.children], false); //lanzamos el rayo contra átomos y bonds a la vez, hits[0] es lo más cercano a la cámara
+		// NUEVO: el raycaster no mira .visible, así que quitamos a mano lo que está oculto en el modo actual
+		const targets = [...atomsGroup.children, ...bondsGroup.children].filter(object => object.visible);
+
+		const hits = raycaster.intersectObjects(targets, false); //lanzamos el rayo contra átomos y bonds a la vez, hits[0] es lo más cercano a la cámara
 
 		const data = hits.length > 0 ? hits[0].object.userData : null; // Comprueba si el rayo ha intersectado alguno de los objetos que están dentro de atomsGroup
 
@@ -254,56 +261,6 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		}
 	}
 
-	async function handleRecord()
-	{
-		const gl = glRef.current;
-		const renderer = rendererRef.current;
-		const scene = sceneRef.current;
-		const camera = cameraRef.current;
-		const group = moleculeGroupRef.current;
-
-		if (!gl || !renderer || !scene || !camera || !group || recording || sharing)
-			return; // si falta algo o ya estamos grabando, no hacemos nada
-
-		const startRotation = group.rotation.y; // la guardamos para restaurarla al acabar
-		const file = new File(Paths.cache, 'molecule.mp4'); // archivo temporal en la caché de la app
-
-		try
-		{
-			setRecording(true);
-
-			if (file.exists)
-				file.delete(); // borramos el vídeo anterior si existe
-
-			await recorder.record({
-				output: file.uri,
-				fps: VIDEO_FPS,
-				totalFrames: VIDEO_FRAMES,
-				onFrame: async ({frameIndex}) => // se llama antes de capturar cada frame
-				{
-					group.rotation.y = startRotation + (frameIndex / VIDEO_FRAMES) * Math.PI * 2; // giro completo repartido en frames
-					renderer.render(scene, camera); // dibujamos este frame ahora mismo
-					gl.endFrameEXP(); // lo presentamos en pantalla para que se capture
-				},
-			});
-
-			await shareVideo(file.uri);
-		}
-		catch (error)
-		{
-			const message = error instanceof Error
-				? error.message
-				: 'Unable to record the molecule.';
-
-			Alert.alert('Recording failed', message);
-		}
-		finally
-		{
-			group.rotation.y = startRotation; // restauramos siempre, aunque falle
-			setRecording(false);
-		}
-	}
-
 	function highlightElement(element: string | null)
 	{
 		const group = atomsGroupRef.current;
@@ -315,11 +272,58 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 			const mesh = child as THREE.Mesh;
 			const material = mesh.material as THREE.MeshStandardMaterial;
 			const match = element !== null && (mesh.userData.atom as Atom).element === element;
+			const base = (mesh.userData.baseScale as number | undefined) ?? 1; // NUEVO: tamaño según el modo
 
-			mesh.scale.setScalar(match ? 1.4 : 1);   // más grande: se nota incluso con el hidrógeno blanco
+			mesh.scale.setScalar(base * (match ? 1.4 : 1)); // más grande: se nota incluso con el hidrógeno blanco
 			material.emissive.set(match ? '#FFFFFF' : '#000000'); // y brilla un poco
 			material.emissiveIntensity = match ? 0.35 : 0;
 		}
+	}
+
+	function applyMode(next: ViewMode) //cambia el aspecto de la molécula sin volver a crearla, solo con scale y visible
+	{
+		const atomsGroup = atomsGroupRef.current;
+		const bondsGroup = bondsGroupRef.current;
+		if (!atomsGroup || !bondsGroup)
+			return;
+
+		for (const child of atomsGroup.children)
+		{
+			const mesh = child as THREE.Mesh;
+			const element = (mesh.userData.atom as Atom).element;
+
+			let scale = 1; // ball-stick: esfera normal
+			if (next === 'space-filling')
+				scale = getVdwRadius(element) / ATOM_RADIUS; // esfera con el radio de van der Waals
+			else if (next === 'stick')
+				scale = 0.35; // esfera muy pequeña
+
+			mesh.userData.baseScale = scale; // lo guardamos para que highlightElement lo respete
+			mesh.scale.setScalar(scale);
+			mesh.visible = next !== 'wireframe'; // sin esferas en wireframe
+		}
+
+		// el cilindro apunta al eje Y, así que escalar X y Z cambia su grosor
+		let thickness = 1;
+		if (next === 'stick')
+			thickness = 1.5;
+		else if (next === 'wireframe')
+			thickness = 0.3;
+
+		for (const child of bondsGroup.children)
+		{
+			child.scale.set(thickness, 1, thickness);
+			child.visible = next !== 'space-filling'; // las esferas gigantes ya tapan los enlaces
+		}
+
+		setSelectedAtom(null); // cerramos las tarjetas porque el objeto pulsado puede haber desaparecido
+		setSelectedBond(null);
+	}
+
+	function handleMode(next: ViewMode) // NUEVO
+	{
+		setMode(next);
+		applyMode(next);
 	}
 
 	function applySceneTheme()
@@ -343,9 +347,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 	return (
 		<View style={styles.container}>
 			<GestureControls onRotate={rotateMolecule} onZoom={zoomCamera} onTap={handleTap}>
-				<RecordingView sessionId={recorder.sessionId} style={styles.glView}>
-					<GLView style={styles.glView} onContextCreate={onContextCreate} />
-				</RecordingView>
+				<GLView style={styles.glView} onContextCreate={onContextCreate} />
 			</GestureControls>
 
 			<AtomInformation atom={selectedAtom} />
@@ -361,20 +363,19 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 				</Text>
 			</TouchableOpacity>
 
-			<TouchableOpacity
-				style={styles.recordButton}
-				onPress={handleRecord}
-				disabled={recording || sharing}
-			>
-				<Text style={styles.shareButtonText}>Video</Text>
-			</TouchableOpacity>
-
-			{recording && (
-				<View style={styles.recordingOverlay}>
-					<Text style={styles.shareButtonText}>Recording...</Text>
-				</View>
-			)}
-
+			<View style={styles.modeBar}>
+				{MODES.map(item => (
+					<TouchableOpacity
+						key={item.key}
+						style={[styles.modeButton, mode === item.key && styles.modeButtonActive]}
+						onPress={() => handleMode(item.key)}
+						accessibilityRole="button"
+						accessibilityLabel={`${item.label} view`}
+					>
+						<Text style={styles.modeText}>{item.label}</Text>
+					</TouchableOpacity>
+				))}
+			</View>
 		</View>
 	);
 }

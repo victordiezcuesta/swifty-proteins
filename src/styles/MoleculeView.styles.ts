@@ -27,22 +27,32 @@ export const styles = StyleSheet.create({
 		fontWeight: '700',
 	},
 
-	recordButton: {
+	modeBar: {
 		position: 'absolute',
-		top: 104,
-		right: 20,
-		height: 44,
-		paddingHorizontal: 18,
+		bottom: 110,
+		left: 10,
+		right: 10,
+		flexDirection: 'row',
+		justifyContent: 'center',
+	},
+
+	modeButton: {
+		height: 40,
+		paddingHorizontal: 14,
+		marginHorizontal: 4,
 		borderRadius: 10,
 		alignItems: 'center',
 		justifyContent: 'center',
+		backgroundColor: 'rgba(23, 32, 42, 0.55)',
+	},
+
+	modeButtonActive: {
 		backgroundColor: '#2563EB',
 	},
 
-	recordingOverlay: {
-		...StyleSheet.absoluteFill,
-		alignItems: 'center',
-		justifyContent: 'center',
-		backgroundColor: 'rgba(23, 32, 42, 0.6)',
+	modeText: {
+		color: '#FFFFFF',
+		fontSize: 14,
+		fontWeight: '700',
 	},
 });

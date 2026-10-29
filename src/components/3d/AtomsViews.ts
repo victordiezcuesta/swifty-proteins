@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import {Molecule} from '../../types/molecule';
 import {getCpkColor} from '../../utils/cpk';
 
-const ATOM_RADIUS = 0.3;
+export const ATOM_RADIUS = 0.3;
 
 export function createAtomsView(molecule: Molecule, center: THREE.Vector3,): {group: THREE.Group; radius: number;}
 {
