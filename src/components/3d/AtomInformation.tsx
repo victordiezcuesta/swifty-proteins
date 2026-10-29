@@ -12,11 +12,11 @@ type AtomInformationProps = {
 
 export default function AtomInformation({atom}: AtomInformationProps)
 {
-	if (!atom)
-		return null;
-
 	const theme = useTheme();
 	const styles = useMemo(() => createStyles(theme), [theme]);
+
+	if (!atom)
+		return null;
 
 	return (
 		<View style={styles.card} pointerEvents="none">

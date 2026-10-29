@@ -49,7 +49,7 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 	},
 
 	retryText: {
-		color: 't.surface',
+		color: t.surface,
 		fontSize: 16,
 		fontWeight: '700',
 	},

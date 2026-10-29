@@ -22,11 +22,11 @@ function getBondType(order: number): string
 
 export default function BondInformation({bond}: BondInformationProps)
 {
-	if (!bond)
-		return null;
-
 	const theme = useTheme();
 	const styles = useMemo(() => createStyles(theme), [theme]);
+
+	if (!bond)
+		return null;
 
 	return (
 		<View style={styles.card} pointerEvents="none">

@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState,useMemo} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Alert, Text, TouchableOpacity, View} from 'react-native';
 import {GLView, ExpoWebGLRenderingContext} from 'expo-gl'; //ExpoWebGLRenderingContext=contexto gráfico OpenGL que proporciona Expo
 import * as THREE from 'three';

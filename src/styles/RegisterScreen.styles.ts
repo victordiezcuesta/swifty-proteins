@@ -17,7 +17,7 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 	title: {
 		fontSize: 30,
 		fontWeight: '700',
-		color: 't.text',
+		color: t.text,
 		textAlign: 'center',
 	},
 

@@ -11,7 +11,7 @@ const CPK_COLORS: Record<string, string> = {
 	I: '#940094',
 	FE: '#E06633',
 	MG: '#8AFF00',
-	ZN: '#7d80b092',
+	ZN: '#7D80B0',
 	CA: '#3DFF00',
 	NA: '#AB5CF2',
 };
