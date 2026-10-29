@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {Alert, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View} from 'react-native';
 
+import {useTheme} from '../styles/theme';
 import { register } from '../services/Authentification';
-import {styles} from '../styles/RegisterScreen.styles';
+import {createStyles} from '../styles/RegisterScreen.styles';
 
 type RegisterScreenProps = {
 	onRegisterSuccess?: () => void;
 };
+
+const theme = useTheme();
+const styles = useMemo(() => createStyles(theme), [theme]);
 
 export default function RegisterScreen({onRegisterSuccess}: RegisterScreenProps)
 {
@@ -90,6 +94,7 @@ export default function RegisterScreen({onRegisterSuccess}: RegisterScreenProps)
 					autoCapitalize="none"
 					autoCorrect={false}
 					editable={!loading}
+					placeholderTextColor={theme.textSecondary}
 				/>
 
 				<Text style={styles.label}>
@@ -105,6 +110,7 @@ export default function RegisterScreen({onRegisterSuccess}: RegisterScreenProps)
 					autoCapitalize="none"
 					autoCorrect={false}
 					editable={!loading}
+					placeholderTextColor={theme.textSecondary}
 				/>
 
 				<Text style={styles.label}>
@@ -120,6 +126,7 @@ export default function RegisterScreen({onRegisterSuccess}: RegisterScreenProps)
 					autoCapitalize="none"
 					autoCorrect={false}
 					editable={!loading}
+					placeholderTextColor={theme.textSecondary}
 				/>
 
 				<TouchableOpacity

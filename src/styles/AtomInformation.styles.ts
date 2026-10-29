@@ -1,6 +1,8 @@
 import {StyleSheet} from 'react-native';
 
-export const styles = StyleSheet.create({
+import {Theme} from './theme';
+
+export const createStyles = (t: Theme) => StyleSheet.create({
 	card: {
 		position: 'absolute',
 		top: 60,
@@ -8,7 +10,7 @@ export const styles = StyleSheet.create({
 		minWidth: 200,
 		padding: 14,
 		borderRadius: 12,
-		backgroundColor: 'rgba(23, 32, 42, 0.92)',
+		backgroundColor: t.card,
 	},
 
 	header: {

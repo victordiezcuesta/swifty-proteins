@@ -1,15 +1,19 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useMemo} from 'react';
 import {Alert, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View} from 'react-native';
 
 import * as LocalAuthentication from 'expo-local-authentication';
 
+import {useTheme} from '../styles/theme';
 import {biometricLogin, login} from '../services/Authentification';
-import {styles} from '../styles/LoginScreen.styles';
+import {createStyles} from '../styles/LoginScreen.styles';
 
 type LoginScreenProps = {
 	onLoginSuccess?: () => void; //lo queremos para avisar a app.tsx que nos hemos terminado de loguear
 	onRegisterPress?: () => void;
 };
+
+const theme = useTheme();
+const styles = useMemo(() => createStyles(theme), [theme]);
 
 export default function LoginScreen({onLoginSuccess, onRegisterPress}: LoginScreenProps)
 {
@@ -132,6 +136,7 @@ export default function LoginScreen({onLoginSuccess, onRegisterPress}: LoginScre
 					autoCapitalize="none"
 					autoCorrect={false}
 					editable={!loading}
+					placeholderTextColor={theme.textSecondary}
 				/>
 
 				<Text style={styles.label}>
@@ -147,6 +152,7 @@ export default function LoginScreen({onLoginSuccess, onRegisterPress}: LoginScre
 					autoCapitalize="none"
 					autoCorrect={false}
 					editable={!loading}
+					placeholderTextColor={theme.textSecondary}
 				/>
 
 				<TouchableOpacity

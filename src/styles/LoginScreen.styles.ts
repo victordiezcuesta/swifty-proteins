@@ -1,9 +1,11 @@
 import {StyleSheet} from 'react-native';
 
-export const styles = StyleSheet.create({
+import {Theme} from './theme';
+
+export const createStyles = (t: Theme) => StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#F5F7FA',
+		backgroundColor: 't.background',
 	},
 
 	content: {
@@ -15,7 +17,7 @@ export const styles = StyleSheet.create({
 	title: {
 		fontSize: 30,
 		fontWeight: '700',
-		color: '#17202A',
+		color: 't.text',
 		textAlign: 'center',
 	},
 
@@ -23,7 +25,7 @@ export const styles = StyleSheet.create({
 		marginTop: 8,
 		marginBottom: 32,
 		fontSize: 16,
-		color: '#68737D',
+		color: 't.textSecondary',
 		textAlign: 'center',
 	},
 
@@ -32,7 +34,7 @@ export const styles = StyleSheet.create({
 		marginTop: 16,
 		fontSize: 15,
 		fontWeight: '600',
-		color: '#17202A',
+		color: 't.text',
 	},
 
 	input: {
@@ -41,8 +43,9 @@ export const styles = StyleSheet.create({
 		borderColor: '#D5DADF',
 		borderRadius: 10,
 		paddingHorizontal: 14,
-		backgroundColor: '#FFFFFF',
+		backgroundColor: 't.surface',
 		fontSize: 16,
+		color: t.text,
 	},
 
 	button: {
@@ -51,7 +54,7 @@ export const styles = StyleSheet.create({
 		borderRadius: 10,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: '#2563EB',
+		backgroundColor: t.link,
 	},
 
 	buttonDisabled: {
@@ -59,7 +62,7 @@ export const styles = StyleSheet.create({
 	},
 
 	buttonText: {
-		color: '#FFFFFF',
+		color: 't.surface',
 		fontSize: 16,
 		fontWeight: '700',
 	},
@@ -71,12 +74,12 @@ export const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		borderWidth: 1,
-		borderColor: '#2563EB',
-		backgroundColor: '#FFFFFF',
+		borderColor: t.link,
+		backgroundColor: 't.surface',
 	},
 
 	biometricButtonText: {
-		color: '#2563EB',
+		color: t.link,
 		fontSize: 16,
 		fontWeight: '700',
 	},
@@ -87,7 +90,7 @@ export const styles = StyleSheet.create({
 	},
 
 	registerText: {
-		color: '#2563EB',
+		color: t.link,
 		fontSize: 15,
 		fontWeight: '600',
 	},

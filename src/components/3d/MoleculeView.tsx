@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState,useMemo} from 'react';
 import {Alert, Text, TouchableOpacity, View} from 'react-native';
 import {GLView, ExpoWebGLRenderingContext} from 'expo-gl'; //ExpoWebGLRenderingContext=contexto gráfico OpenGL que proporciona Expo
 import * as THREE from 'three';
@@ -13,6 +13,7 @@ import AtomInformation from './AtomInformation';
 import BondInformation from './BondInformation';
 import {shareMolecule, shareVideo} from '../../services/Share';
 import {styles} from '../../styles/MoleculeView.styles';
+import {useTheme} from '../../styles/theme';
 
 type MoleculeViewProps = {
     molecule: Molecule;
@@ -34,6 +35,9 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 	const glRef = useRef<ExpoWebGLRenderingContext | null>(null);
 	const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
 	const sceneRef = useRef<THREE.Scene | null>(null);
+	const theme = useTheme();
+	const ambientRef = useRef<THREE.AmbientLight | null>(null);
+	const lightRef = useRef<THREE.DirectionalLight | null>(null);
 
 	const recorder = useViewRecorder(); // objeto que controla la grabación
 	
@@ -87,13 +91,15 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 
 		const scene = new THREE.Scene();
 
-		scene.background = new THREE.Color('#F5F7FA');
+		const ambient = new THREE.AmbientLight(0xffffff, theme.ambientIntensity); //luz de ambiente
+		scene.add(ambient);
 
-		scene.add(new THREE.AmbientLight(0xffffff, 0.6)); //luz de ambiente
-
-		const light = new THREE.DirectionalLight(0xffffff, 1); //uz direccional para darles una visual mas 3d
+		const light = new THREE.DirectionalLight(0xffffff, theme.lightIntensity); //uz direccional para darles una visual mas 3d
 		light.position.set(5, 5, 5);
 		scene.add(light);
+
+		ambientRef.current = ambient;
+		lightRef.current = light;
 
 		const center = new THREE.Vector3();
 		for (const atom of molecule.atoms)
@@ -139,6 +145,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		cameraRef.current = camera;
 		rendererRef.current = renderer;
 		sceneRef.current = scene;
+		applySceneTheme();
 		radiusRef.current = radius;
 
 		function loop()
@@ -294,6 +301,24 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 			setRecording(false);
 		}
 	}
+
+	function applySceneTheme()
+	{
+		const scene = sceneRef.current;
+		const ambient = ambientRef.current;
+		const light = lightRef.current;
+		if (!scene || !ambient || !light)
+			return;
+
+		scene.background = new THREE.Color(theme.scene);
+		ambient.intensity = theme.ambientIntensity;
+		light.intensity = theme.lightIntensity;
+	}
+
+	useEffect(() =>
+	{
+		applySceneTheme(); // si cambias el tema del móvil con la molécula abierta, se actualiza en vivo
+	}, [theme]);
 
 	return (
 		<View style={styles.container}>

@@ -1,8 +1,10 @@
 import {ActivityIndicator, Text, TouchableOpacity, View} from 'react-native';
+import {useMemo} from 'react';
 
+import {useTheme} from '../styles/theme';
 import MoleculeView from '../components/3d/MoleculeView';
 import {Molecule} from '../types/molecule';
-import {styles} from '../styles/LigandScreen.styles';
+import {createStyles} from '../styles/LigandScreen.styles';
 
 type LigandScreenProps = {
 	ligandId: string | null;
@@ -13,13 +15,16 @@ type LigandScreenProps = {
 	molecule: Molecule | null;
 };
 
+const theme = useTheme();
+const styles = useMemo(() => createStyles(theme), [theme]);
+
 export default function LigandScreen({ligandId, cif, loading, error, onBack, molecule}: LigandScreenProps)
 {
 	if (loading)
 	{
 		return (
 			<View style={[styles.container, styles.centered]}>
-				<ActivityIndicator size="large" color="#2563EB" />
+				<ActivityIndicator size="large" color={theme.link} />
 
 				<Text style={styles.title}>
 					Loading ligand {ligandId}...

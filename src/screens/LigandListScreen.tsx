@@ -2,8 +2,9 @@ import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ActivityIndicator, FlatList, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
+import {useTheme} from '../styles/theme';
 import {loadLigands} from '../services/Ligands';
-import {styles} from '../styles/LigandListScreen.styles';
+import {createStyles} from '../styles/LigandListScreen.styles';
 
 type LigandListScreenProps = {
 	onSelectLigand?: (ligandId: string) => void;
@@ -11,6 +12,8 @@ type LigandListScreenProps = {
 };
 
 const ROW_HEIGHT = 56;
+const theme = useTheme();
+const styles = useMemo(() => createStyles(theme), [theme]);
 
 export default function LigandListScreen({onSelectLigand, onLogout}: LigandListScreenProps)
 {
@@ -70,7 +73,7 @@ export default function LigandListScreen({onSelectLigand, onLogout}: LigandListS
 	{
 		return (
 			<SafeAreaView style={[styles.container, styles.centered]}>
-				<ActivityIndicator size="large" color="#2563EB" />
+				<ActivityIndicator size="large" color={theme.link} />
 			</SafeAreaView>
 		);
 	}
@@ -110,6 +113,7 @@ export default function LigandListScreen({onSelectLigand, onLogout}: LigandListS
 				autoCorrect={false}
 				clearButtonMode="while-editing"
 				returnKeyType="search"
+				placeholderTextColor={theme.textSecondary}
 			/>
 
 			<FlatList

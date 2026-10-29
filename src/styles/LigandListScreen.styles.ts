@@ -1,9 +1,11 @@
 import {StyleSheet} from 'react-native';
 
-export const styles = StyleSheet.create({
+import {Theme} from './theme';
+
+export const createStyles = (t: Theme) => StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#F5F7FA',
+		backgroundColor: 't.background',
 	},
 
 	centered: {
@@ -23,11 +25,11 @@ export const styles = StyleSheet.create({
 	title: {
 		fontSize: 26,
 		fontWeight: '700',
-		color: '#17202A',
+		color: 't.text',
 	},
 
 	logout: {
-		color: '#2563EB',
+		color: t.link,
 		fontSize: 15,
 		fontWeight: '600',
 	},
@@ -43,11 +45,11 @@ export const styles = StyleSheet.create({
 		borderRadius: 10,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: '#2563EB',
+		backgroundColor: t.link,
 	},
 
 	retryText: {
-		color: '#FFFFFF',
+		color: 't.surface',
 		fontSize: 16,
 		fontWeight: '700',
 	},
@@ -59,7 +61,7 @@ export const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: '#D5DADF',
 		borderRadius: 10,
-		backgroundColor: '#FFFFFF',
+		backgroundColor: 't.surface',
 		fontSize: 16,
 	},
 
@@ -69,19 +71,19 @@ export const styles = StyleSheet.create({
 		paddingHorizontal: 16,
 		borderBottomWidth: StyleSheet.hairlineWidth,
 		borderBottomColor: '#D5DADF',
-		backgroundColor: '#FFFFFF',
+		backgroundColor: 't.surface',
 	},
 
 	rowText: {
 		fontSize: 17,
 		fontWeight: '600',
-		color: '#17202A',
+		color: 't.text',
 	},
 
 	empty: {
 		marginTop: 32,
 		textAlign: 'center',
-		color: '#68737D',
+		color: 't.textSecondary',
 		fontSize: 16,
 	},
 });

@@ -1,12 +1,17 @@
 import {Text, View} from 'react-native';
+import {useMemo} from 'react';
 
+import {useTheme} from '../../styles/theme';
 import {Atom} from '../../types/molecule';
 import {getCpkColor} from '../../utils/cpk';
-import {styles} from '../../styles/AtomInformation.styles';
+import {createStyles} from '../../styles/AtomInformation.styles';
 
 type AtomInformationProps = {
 	atom: Atom | null;
 };
+
+const theme = useTheme();
+const styles = useMemo(() => createStyles(theme), [theme]);
 
 export default function AtomInformation({atom}: AtomInformationProps)
 {

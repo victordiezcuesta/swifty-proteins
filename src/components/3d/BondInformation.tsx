@@ -1,11 +1,16 @@
 import {Text, View} from 'react-native';
+import {useMemo} from 'react';
 
+import {useTheme} from '../../styles/theme';
 import {BondInfo} from '../../types/molecule';
-import {styles} from '../../styles/AtomInformation.styles';
+import {createStyles} from '../../styles/AtomInformation.styles';
 
 type BondInformationProps = {
 	bond: BondInfo | null;
 };
+
+const theme = useTheme();
+const styles = useMemo(() => createStyles(theme), [theme]);
 
 function getBondType(order: number): string
 {

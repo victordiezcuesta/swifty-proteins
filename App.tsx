@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {Alert, AppState, AppStateStatus} from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
+import {StatusBar} from 'expo-status-bar';
 
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
@@ -19,7 +20,7 @@ SplashScreen.preventAutoHideAsync();
 
 type Screen = 'login' | 'register' | 'list' | 'ligand';
 
-export default function App()
+function AuxApp()
 {
 	const [screen, setScreen] = useState<Screen>('login'); //iniciamos la app con login siempre
 	const [selectedLigand, setSelectedLigand] = useState<string | null>(null);
@@ -148,5 +149,15 @@ export default function App()
 			onLoginSuccess={() => setScreen('list')}
 			onRegisterPress={() => setScreen('register')}
 		/>
+	);
+}
+
+export default function App()
+{
+	return (
+		<>
+			<StatusBar style="auto" />
+			<AuxApp />
+		</>
 	);
 }

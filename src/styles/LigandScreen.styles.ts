@@ -1,9 +1,11 @@
 import {StyleSheet} from 'react-native';
 
-export const styles = StyleSheet.create({
+import {Theme} from './theme';
+
+export const createStyles = (t: Theme) => StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#F5F7FA',
+		backgroundColor: 't.background',
 		paddingHorizontal: 24,
 		paddingTop: 60,
 	},
@@ -16,14 +18,14 @@ export const styles = StyleSheet.create({
 	title: {
 		fontSize: 26,
 		fontWeight: '700',
-		color: '#17202A',
+		color: 't.text',
 		textAlign: 'center',
 	},
 
 	subtitle: {
 		marginTop: 12,
 		fontSize: 16,
-		color: '#68737D',
+		color: 't.textSecondary',
 		textAlign: 'center',
 	},
 
@@ -31,21 +33,21 @@ export const styles = StyleSheet.create({
 		marginTop: 20,
 		fontSize: 18,
 		fontWeight: '600',
-		color: '#16803C',
+		color: t.success,
 		textAlign: 'center',
 	},
 
 	error: {
 		marginTop: 16,
 		fontSize: 16,
-		color: '#B42318',
+		color: t.error,
 		textAlign: 'center',
 	},
 
 	info: {
 		marginTop: 12,
 		fontSize: 15,
-		color: '#68737D',
+		color: 't.textSecondary',
 		textAlign: 'center',
 	},
 
@@ -56,11 +58,11 @@ export const styles = StyleSheet.create({
 		borderRadius: 10,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: '#2563EB',
+		backgroundColor: t.link,
 	},
 
 	buttonText: {
-		color: '#FFFFFF',
+		color: 't.surface',
 		fontSize: 16,
 		fontWeight: '700',
 	},
