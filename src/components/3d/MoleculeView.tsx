@@ -2,6 +2,8 @@ import {useEffect, useRef, useState} from 'react';
 import {Alert, Text, TouchableOpacity, View} from 'react-native';
 import {GLView, ExpoWebGLRenderingContext} from 'expo-gl'; //ExpoWebGLRenderingContext=contexto gráfico OpenGL que proporciona Expo
 import * as THREE from 'three';
+import {File, Paths} from 'expo-file-system';
+import {RecordingView, useViewRecorder} from 'react-native-view-recorder';
 
 import {Molecule, Atom, BondInfo} from '../../types/molecule';
 import {createAtomsView, disposeAtomsView} from './AtomsViews';
@@ -9,14 +11,16 @@ import {createBondsView, disposeBondsView} from './BondsViews';
 import GestureControls from './GestureControls';
 import AtomInformation from './AtomInformation';
 import BondInformation from './BondInformation';
-import {shareMolecule} from '../../services/Share';
+import {shareMolecule, shareVideo} from '../../services/Share';
 import {styles} from '../../styles/MoleculeView.styles';
 
 type MoleculeViewProps = {
     molecule: Molecule;
 };
 
-const FOV = 60;
+const FOV = 60; //campo de visión
+const VIDEO_FPS = 30;
+const VIDEO_FRAMES = 90; // 90 frames a 30 fps = 3 segundos
 
 export default function MoleculeView({molecule}: MoleculeViewProps)
 {
@@ -28,7 +32,12 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 	const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
 	const radiusRef = useRef(1);
 	const glRef = useRef<ExpoWebGLRenderingContext | null>(null);
+	const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+	const sceneRef = useRef<THREE.Scene | null>(null);
 
+	const recorder = useViewRecorder(); // objeto que controla la grabación
+	
+	const [recording, setRecording] = useState(false);
 	const [sharing, setSharing] = useState(false); //useState variables que provocan nueva render
 	const [selectedAtom, setSelectedAtom] = useState<Atom | null>(null);
 	const [selectedBond, setSelectedBond] = useState<BondInfo | null>(null);
@@ -46,6 +55,8 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 			cameraRef.current = null;
 			atomsGroupRef.current = null;
 			glRef.current = null;
+			rendererRef.current = null;
+			sceneRef.current = null;
 		};
 	}, []);
 
@@ -126,6 +137,8 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		//Guardamos referencias para los gestos
 		moleculeGroupRef.current = moleculeGroup;
 		cameraRef.current = camera;
+		rendererRef.current = renderer;
+		sceneRef.current = scene;
 		radiusRef.current = radius;
 
 		function loop()
@@ -150,6 +163,8 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 			cameraRef.current = null;
 			atomsGroupRef.current = null;
 			glRef.current = null;
+			rendererRef.current = null;
+			sceneRef.current = null;
 		};
 	}
 
@@ -230,10 +245,62 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		}
 	}
 
+	async function handleRecord()
+	{
+		const gl = glRef.current;
+		const renderer = rendererRef.current;
+		const scene = sceneRef.current;
+		const camera = cameraRef.current;
+		const group = moleculeGroupRef.current;
+
+		if (!gl || !renderer || !scene || !camera || !group || recording || sharing)
+			return; // si falta algo o ya estamos grabando, no hacemos nada
+
+		const startRotation = group.rotation.y; // la guardamos para restaurarla al acabar
+		const file = new File(Paths.cache, 'molecule.mp4'); // archivo temporal en la caché de la app
+
+		try
+		{
+			setRecording(true);
+
+			if (file.exists)
+				file.delete(); // borramos el vídeo anterior si existe
+
+			await recorder.record({
+				output: file.uri,
+				fps: VIDEO_FPS,
+				totalFrames: VIDEO_FRAMES,
+				onFrame: async ({frameIndex}) => // se llama antes de capturar cada frame
+				{
+					group.rotation.y = startRotation + (frameIndex / VIDEO_FRAMES) * Math.PI * 2; // giro completo repartido en frames
+					renderer.render(scene, camera); // dibujamos este frame ahora mismo
+					gl.endFrameEXP(); // lo presentamos en pantalla para que se capture
+				},
+			});
+
+			await shareVideo(file.uri);
+		}
+		catch (error)
+		{
+			const message = error instanceof Error
+				? error.message
+				: 'Unable to record the molecule.';
+
+			Alert.alert('Recording failed', message);
+		}
+		finally
+		{
+			group.rotation.y = startRotation; // restauramos siempre, aunque falle
+			setRecording(false);
+		}
+	}
+
 	return (
 		<View style={styles.container}>
 			<GestureControls onRotate={rotateMolecule} onZoom={zoomCamera} onTap={handleTap}>
-				<GLView style={styles.glView} onContextCreate={onContextCreate} />
+				<RecordingView sessionId={recorder.sessionId} style={styles.glView}>
+					<GLView style={styles.glView} onContextCreate={onContextCreate} />
+				</RecordingView>
 			</GestureControls>
 
 			<AtomInformation atom={selectedAtom} />
@@ -248,6 +315,21 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 					{sharing ? 'Sharing...' : 'Share'}
 				</Text>
 			</TouchableOpacity>
+
+			<TouchableOpacity
+				style={styles.recordButton}
+				onPress={handleRecord}
+				disabled={recording || sharing}
+			>
+				<Text style={styles.shareButtonText}>Video</Text>
+			</TouchableOpacity>
+
+			{recording && (
+				<View style={styles.recordingOverlay}>
+					<Text style={styles.shareButtonText}>Recording...</Text>
+				</View>
+			)}
+
 		</View>
 	);
 }

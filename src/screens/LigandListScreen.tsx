@@ -105,7 +105,7 @@ export default function LigandListScreen({onSelectLigand, onLogout}: LigandListS
 				style={styles.search}
 				value={query}
 				onChangeText={setQuery}
-				placeholder="Search ligand (e.g. ATP)"
+				placeholder="Search ligand"
 				autoCapitalize="characters"
 				autoCorrect={false}
 				clearButtonMode="while-editing"

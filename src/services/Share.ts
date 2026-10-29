@@ -21,3 +21,15 @@ export async function shareMolecule(gl: ExpoWebGLRenderingContext): Promise<void
 		dialogTitle: 'Share molecule',
 	});
 }
+
+export async function shareVideo(uri: string): Promise<void>
+{
+	if (!(await Sharing.isAvailableAsync()))
+		throw new Error('Sharing is not available on this device.');
+
+	await Sharing.shareAsync(uri, {
+		mimeType: 'video/mp4',
+		dialogTitle: 'Share molecule',
+		UTI: 'public.mpeg-4', // tipo de archivo en iOS, en Android se ignora
+	});
+}

@@ -123,10 +123,8 @@ COSAS QUE FALTAN:
 
 	• Dark Mode: Implement a complete dark mode theme that works throughout the app, including the 3D view with appropriate lighting adjustments.
 
-	• Bond Information: Display bond types (single, double, triple) and bond lengths when tapping on bonds.
+	✅ • Bond Information: Display bond types (single, double, triple) and bond lengths when tapping on bonds.
 
-	• Custom Share Messages: When sharing, include a custom message with the ligand name, number of atoms, and molecular formula.
-
-	• Multiple Export Formats: Allow exporting the view as different image formats (PNG, JPEG) or even as a 3D model file.
+	✅ • Video Recording: Record a short video of the molecule rotating and share it. 
 
 	• Favorites System: Allow users to favorite ligands and maintain a favorites list for quick access.
