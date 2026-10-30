@@ -1,4 +1,4 @@
-.PHONY: deps ligands build-goinfre android-sdk install-cluster expo eval-cluster cluster clean re
+.PHONY: deps ligands build-goinfre android-sdk install-apk install-apk-cluster install-cluster expo eval-cluster cluster clean re
 
 GOINFRE := /goinfre/$(USER)/swifty-proteins
 export ANDROID_HOME := /goinfre/$(USER)/Android/Sdk
@@ -39,6 +39,9 @@ android-sdk:
 
 install-cluster: android-sdk build-goinfre
 	cd $(GOINFRE) && npx expo run:android --device --no-bundler
+
+install-apk-cluster: android-sdk build-goinfre
+	cd $(GOINFRE) && npx expo run:android --variant release --device
 
 expo: ligands
 	npx expo start --go -c

@@ -1,9 +1,10 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {ActivityIndicator, FlatList, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Alert, FlatList, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {useTheme} from '../styles/theme';
 import {loadLigands} from '../services/Ligands';
+import {getFavorites, saveFavorites} from '../services/Favorites';
 import {createStyles} from '../styles/LigandListScreen.styles';
 
 type LigandListScreenProps = {
@@ -19,6 +20,8 @@ export default function LigandListScreen({onSelectLigand, onLogout}: LigandListS
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [query, setQuery] = useState('');
+	const [favorites, setFavorites] = useState<string[]>([]);
+	const [onlyFavorites, setOnlyFavorites] = useState(false);
 	const mounted = useRef(true);
 	const theme = useTheme();
 	const styles = useMemo(() => createStyles(theme), [theme]);
@@ -54,20 +57,37 @@ export default function LigandListScreen({onSelectLigand, onLogout}: LigandListS
 		mounted.current = true;
 		reload();
 
+		getFavorites().then(list => //cargamos los favoritos guardados
+		{
+			if (mounted.current)
+				setFavorites(list);
+		});
+
 		return () =>
 		{
 			mounted.current = false;
 		};
 	}, [reload]);
 
+	function toggleFavorite(id: string)
+	{
+		const next = favorites.includes(id)
+			? favorites.filter(favorite => favorite !== id)
+			: [...favorites, id];
+
+		setFavorites(next);
+		saveFavorites(next).catch(() =>
+			Alert.alert('Favorites', 'Unable to save your favorites. Please try again.'));
+	}
+
 	const filteredLigands = useMemo(() =>
 	{
 		const q = query.trim().toLowerCase();
-		if (!q)
-			return ligands;
 
-		return ligands.filter(id => id.toLowerCase().includes(q));
-	}, [query, ligands]);
+		return ligands.filter(id =>
+			(!onlyFavorites || favorites.includes(id))
+			&& id.toLowerCase().includes(q));
+	}, [query, ligands, favorites, onlyFavorites]);
 
 	if (loading)
 	{
@@ -116,8 +136,20 @@ export default function LigandListScreen({onSelectLigand, onLogout}: LigandListS
 				placeholderTextColor={theme.textSecondary}
 			/>
 
+			<TouchableOpacity
+				style={[styles.filterButton, onlyFavorites && styles.filterButtonActive]}
+				onPress={() => setOnlyFavorites(!onlyFavorites)}
+				accessibilityRole="button"
+				accessibilityLabel="Show only favorites"
+			>
+				<Text style={[styles.filterText, onlyFavorites && styles.filterTextActive]}>
+					♥ Favorites ({favorites.length})
+				</Text>
+			</TouchableOpacity>
+
 			<FlatList
 				data={filteredLigands}
+				extraData={favorites}
 				keyExtractor={item => item}
 				keyboardShouldPersistTaps="handled"
 				initialNumToRender={20}
@@ -128,17 +160,35 @@ export default function LigandListScreen({onSelectLigand, onLogout}: LigandListS
 					index,
 				})}
 				renderItem={({item}) => (
-					<TouchableOpacity
-						style={styles.row}
-						onPress={() => onSelectLigand?.(item)}
-						accessibilityRole="button"
-						accessibilityLabel={`Ligand ${item}`}
-					>
-						<Text style={styles.rowText}>{item}</Text>
-					</TouchableOpacity>
+					<View style={styles.row}>
+						<TouchableOpacity
+							style={styles.rowButton}
+							onPress={() => onSelectLigand?.(item)}
+							accessibilityRole="button"
+							accessibilityLabel={`Ligand ${item}`}
+						>
+							<Text style={styles.rowText}>{item}</Text>
+						</TouchableOpacity>
+
+						<TouchableOpacity
+							onPress={() => toggleFavorite(item)}
+							accessibilityRole="button"
+							accessibilityLabel={favorites.includes(item)
+								? `Remove ${item} from favorites`
+								: `Add ${item} to favorites`}
+						>
+							<Text style={styles.like}>
+								{favorites.includes(item) ? '♥' : '♡'}
+							</Text>
+						</TouchableOpacity>
+					</View>
 				)}
 				ListEmptyComponent={
-					<Text style={styles.empty}>No ligands match "{query}".</Text>
+					<Text style={styles.empty}>
+						{onlyFavorites && !query.trim()
+							? 'No favorites yet. Tap ♡ on a ligand to add it.'
+							: `No ligands match "${query}".`}
+					</Text>
 				}
 			/>
 		</SafeAreaView>

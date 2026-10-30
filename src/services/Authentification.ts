@@ -11,10 +11,10 @@ const BCRYPT_COST = 10; //hace 2^10 operaciones para hasear password
 
 bcrypt.setRandomFallback((len: number) => Array.from(Crypto.getRandomBytes(len))); //le damos una funcion de bytes aleatorios y lo metemos en un array, porque react native no trae una funcion randorizada que nos valga
 
-function userKey(username: string): string //SecureStore solo admite [A-Za-z0-9._-] en las claves, así que pasamos el username a hex y lo ponemos el usuario en minusculas para que Victor y victor sea el mismo user
+export function userKey(username: string): string //SecureStore solo admite [A-Za-z0-9._-] en las claves, así que pasamos el username a hex y lo ponemos el usuario en minusculas para que Victor y victor sea el mismo user
 {
 	const hex = Array.from(new TextEncoder().encode(username.trim().toLowerCase()))
-		.map(byte => byte.toString(16).padStart(2, '0'))
+		.map(byte => byte.toString(16).padStart(2, '0')) //y lo ponemos en hexadecimal el nombre del user
 		.join('');
 
 	return USER_KEY_PREFIX + hex;
@@ -134,4 +134,9 @@ export async function biometricLogin(): Promise<boolean>
 		throw new Error('Biometric authentication failed. Please try again.');
 
 	return true;
+}
+
+export async function getCurrentUsername(): Promise<string | null>
+{
+	return await SecureStore.getItemAsync(LAST_USER_KEY);
 }

@@ -65,13 +65,52 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 		fontSize: 16,
 	},
 
-	row: {
+		row: {
 		height: 56,
-		justifyContent: 'center',
-		paddingHorizontal: 16,
+		flexDirection: 'row',          // NUEVO: nombre a la izquierda, estrella a la derecha
+		alignItems: 'center',          // NUEVO
+		paddingLeft: 16,               // CAMBIADO (antes paddingHorizontal: 16)
 		borderBottomWidth: StyleSheet.hairlineWidth,
 		borderBottomColor: '#D5DADF',
 		backgroundColor: t.surface,
+	},
+
+	rowButton: {
+		flex: 1,
+		height: '100%',
+		justifyContent: 'center',
+	},
+
+	like: {
+		fontSize: 26,
+		color: '#E0245E',
+		paddingHorizontal: 16,
+	},
+
+	filterButton: {
+		alignSelf: 'flex-start',
+		height: 36,
+		marginHorizontal: 16,
+		marginBottom: 8,
+		paddingHorizontal: 14,
+		borderRadius: 18,
+		borderWidth: 1,
+		borderColor: t.link,
+		justifyContent: 'center',
+	},
+
+	filterButtonActive: {              // NUEVO
+		backgroundColor: t.link,
+	},
+
+	filterText: {                      // NUEVO
+		color: t.link,
+		fontSize: 14,
+		fontWeight: '600',
+	},
+
+	filterTextActive: {                // NUEVO
+		color: t.surface,
 	},
 
 	rowText: {

@@ -121,17 +121,22 @@ COSAS QUE FALTAN:
 
 - BONUS:
 
-perfect	✅ • Dark Mode: Implement a complete dark mode theme that works throughout the app, including the 3D view with appropriate lighting adjustments.
+perfect✅ • Dark Mode: Implement a complete dark mode theme that works throughout the app, including the 3D view with appropriate lighting adjustments.
 
-probar	• Bond Information: Display bond types (single, double, triple) and bond lengths when tapping on bonds.
+perfect✅ • Bond Information: Display bond types (single, double, triple) and bond lengths when tapping on bonds.
 
-	• Favorites System: Allow users to favorite ligands and maintain a favorites list for quick access.
+perfect✅ • Favorites System: Allow users to favorite ligands and maintain a favorites list for quick access.
 
-probar	• Atom Highlighting: When hovering over or selecting an atom, highlight all atoms of the same element type.
+perfect✅ • Atom Highlighting: When hovering over or selecting an atom, highlight all atoms of the same element type.
 
-probar	VII.1 Multiple Visualization Models (completo)
+perfect✅ VII.1 Multiple Visualization Models (completo)
 		Implement additional molecular representation models beyond the mandatory Ball-and- Stick model. Users should be able to switch between different visualization modes:
 			• Space-Filling Model (CPK Model): Atoms are represented as overlapping spheres with sizes proportional to their van der Waals radii. This shows the molecule’s actual volume and surface.
 			• Wireframe Model: Display only the bonds as lines, without atom spheres. This provides a clearer view of the molecular structure for complex molecules.
 			• Stick Model: Similar to ball-and-stick but with very small or no spheres, empha-sizing the bond structure.
 			• Include a UI control (segmented control, dropdown, or buttons) to switch between models in real-time without reloading the molecule.
+
+• En la pantalla de create una cuenta que le puedas dar para atras con los botones de android y que vaya al login  e implementar un boton que sea para ir al login
+• Cambiar un poco el diseño del create cuenta, login, list lingans y moleculaview
+• el boton de back to ligands se pone debajo de los botones de android de home, para atras y abrir ventana con aplicaciones abiertas
+• cuando estamos en una vision 3d de una molecula y pulsamos el boton de atras de android que no se cierre la app, que vuelva a list ligands
