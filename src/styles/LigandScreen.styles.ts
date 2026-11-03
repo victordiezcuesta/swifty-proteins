@@ -73,7 +73,7 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 
 	backButton: {
 		position: 'absolute',
-		bottom: 40,
+		bottom: 55,
 		alignSelf: 'center',
 	},
 });

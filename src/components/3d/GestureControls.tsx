@@ -122,7 +122,7 @@ export default function GestureControls({children, onRotate, onZoom, onTap}: Ges
             {children}
             <View
                 style={styles.gestureLayer}
-                onLayout={(e: LayoutChangeEvent) => { size.current = e.nativeEvent.layout; }}  // NUEVO
+                onLayout={(e: LayoutChangeEvent) => { size.current = e.nativeEvent.layout; }}
                 {...responder.panHandlers}
             />
         </View>

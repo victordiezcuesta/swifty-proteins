@@ -65,11 +65,11 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 		fontSize: 16,
 	},
 
-		row: {
+	row: {
 		height: 56,
-		flexDirection: 'row',          // NUEVO: nombre a la izquierda, estrella a la derecha
-		alignItems: 'center',          // NUEVO
-		paddingLeft: 16,               // CAMBIADO (antes paddingHorizontal: 16)
+		flexDirection: 'row', //nombre a la izquierda, estrella a la derecha
+		alignItems: 'center',
+		paddingLeft: 16,
 		borderBottomWidth: StyleSheet.hairlineWidth,
 		borderBottomColor: '#D5DADF',
 		backgroundColor: t.surface,
@@ -99,17 +99,17 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 		justifyContent: 'center',
 	},
 
-	filterButtonActive: {              // NUEVO
+	filterButtonActive: {
 		backgroundColor: t.link,
 	},
 
-	filterText: {                      // NUEVO
+	filterText: {
 		color: t.link,
 		fontSize: 14,
 		fontWeight: '600',
 	},
 
-	filterTextActive: {                // NUEVO
+	filterTextActive: {
 		color: t.surface,
 	},
 

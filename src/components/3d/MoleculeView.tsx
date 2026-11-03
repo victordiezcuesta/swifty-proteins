@@ -18,9 +18,9 @@ type MoleculeViewProps = {
     molecule: Molecule;
 };
 
-type ViewMode = 'ball-stick' | 'space-filling' | 'stick' | 'wireframe'; // NUEVO
+type ViewMode = 'ball-stick' | 'space-filling' | 'stick' | 'wireframe';
 
-const MODES: {key: ViewMode; label: string}[] = [ // NUEVO
+const MODES: {key: ViewMode; label: string}[] = [
 	{key: 'ball-stick', label: 'Ball'},
 	{key: 'space-filling', label: 'Space'},
 	{key: 'stick', label: 'Stick'},
@@ -48,7 +48,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 	const [sharing, setSharing] = useState(false); //useState variables que provocan nueva render
 	const [selectedAtom, setSelectedAtom] = useState<Atom | null>(null);
 	const [selectedBond, setSelectedBond] = useState<BondInfo | null>(null);
-	const [mode, setMode] = useState<ViewMode>('ball-stick'); // NUEVO
+	const [mode, setMode] = useState<ViewMode>('ball-stick');
 
 	useEffect(() =>
 	{
@@ -221,7 +221,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		const raycaster = new THREE.Raycaster();//ennviamos un rayo para ver que atomo hemos tocado
 		raycaster.setFromCamera(ndc, camera);
 
-		// NUEVO: el raycaster no mira .visible, así que quitamos a mano lo que está oculto en el modo actual
+		//el raycaster no mira .visible, así que quitamos a mano lo que está oculto en el modo actual
 		const targets = [...atomsGroup.children, ...bondsGroup.children].filter(object => object.visible);
 
 		const hits = raycaster.intersectObjects(targets, false); //lanzamos el rayo contra átomos y bonds a la vez, hits[0] es lo más cercano a la cámara
@@ -272,7 +272,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 			const mesh = child as THREE.Mesh;
 			const material = mesh.material as THREE.MeshStandardMaterial;
 			const match = element !== null && (mesh.userData.atom as Atom).element === element;
-			const base = (mesh.userData.baseScale as number | undefined) ?? 1; // NUEVO: tamaño según el modo
+			const base = (mesh.userData.baseScale as number | undefined) ?? 1; // tamaño según el modo
 
 			mesh.scale.setScalar(base * (match ? 1.4 : 1)); // más grande: se nota incluso con el hidrógeno blanco
 			material.emissive.set(match ? '#FFFFFF' : '#000000'); // y brilla un poco
@@ -320,7 +320,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		setSelectedBond(null);
 	}
 
-	function handleMode(next: ViewMode) // NUEVO
+	function handleMode(next: ViewMode)
 	{
 		setMode(next);
 		applyMode(next);
