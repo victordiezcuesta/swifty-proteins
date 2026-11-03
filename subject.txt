@@ -136,7 +136,8 @@ perfect✅ VII.1 Multiple Visualization Models (completo)
 			• Stick Model: Similar to ball-and-stick but with very small or no spheres, empha-sizing the bond structure.
 			• Include a UI control (segmented control, dropdown, or buttons) to switch between models in real-time without reloading the molecule.
 
-• En la pantalla de create una cuenta que le puedas dar para atras con los botones de android y que vaya al login  e implementar un boton que sea para ir al login
+
+Revisar ❓ • En la pantalla de create una cuenta que le puedas dar para atras con los botones de android y que vaya al login  e implementar un boton que sea para ir al login
 • Cambiar un poco el diseño del create cuenta, login, list lingans y moleculaview
 • el boton de back to ligands se pone debajo de los botones de android de home, para atras y abrir ventana con aplicaciones abiertas
 • cuando estamos en una vision 3d de una molecula y pulsamos el boton de atras de android que no se cierre la app, que vuelva a list ligands

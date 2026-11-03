@@ -7,9 +7,10 @@ import {createStyles} from '../styles/RegisterScreen.styles';
 
 type RegisterScreenProps = {
 	onRegisterSuccess?: () => void;
+	onLoginPress?: () => void;
 };
 
-export default function RegisterScreen({onRegisterSuccess}: RegisterScreenProps)
+export default function RegisterScreen({onRegisterSuccess, onLoginPress}: RegisterScreenProps)
 {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
@@ -142,6 +143,17 @@ export default function RegisterScreen({onRegisterSuccess}: RegisterScreenProps)
 							: 'Create account'}
 					</Text>
 				</TouchableOpacity>
+
+				<TouchableOpacity
+					style={styles.loginButton}
+					onPress={onLoginPress}
+					disabled={loading}
+				>
+					<Text style={styles.loginText}>
+						Already have an account? Sign in
+					</Text>
+				</TouchableOpacity>
+
 			</View>
 		</KeyboardAvoidingView>
 	);

@@ -66,4 +66,16 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 		fontSize: 16,
 		fontWeight: '700',
 	},
+	
+	loginButton: {
+		marginTop: 24,
+		alignItems: 'center',
+	},
+
+	loginText: {
+		color: t.link,
+		fontSize: 15,
+		fontWeight: '600',
+	},
+
 });

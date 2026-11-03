@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import {Alert, AppState, AppStateStatus} from 'react-native';
+import {Alert, AppState, AppStateStatus, BackHandler} from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import {StatusBar} from 'expo-status-bar';
 
@@ -65,6 +65,23 @@ function AuxApp()
 		};
 	}, []);
 
+	useEffect(() =>
+	{
+		if (screen !== 'register') //solo interceptamos el boton atras en la pantalla de registro
+			return;
+
+		const subscription = BackHandler.addEventListener('hardwareBackPress', () =>
+		{
+			setScreen('login'); //volvemos al login
+			return true; //true = "ya lo he gestionado yo", si devolvemos false Android cerraria la app
+		});
+
+		return () =>
+		{
+			subscription.remove(); //al salir de register (o cambiar screen) quitamos el listener
+		};
+	}, [screen]);
+
 	if (showLaunchScreen)
 	{
 		return <LaunchScreen />;
@@ -75,6 +92,7 @@ function AuxApp()
 		return (
 			<RegisterScreen
 				onRegisterSuccess={() => setScreen('login')}
+				onLoginPress={() => setScreen('login')}
 			/>
 		);
 	}
