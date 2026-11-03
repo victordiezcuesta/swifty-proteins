@@ -143,7 +143,7 @@ export default function LigandListScreen({onSelectLigand, onLogout}: LigandListS
 				accessibilityLabel="Show only favorites"
 			>
 				<Text style={[styles.filterText, onlyFavorites && styles.filterTextActive]}>
-					♥ Favorites ({favorites.length})
+					★ Favorites ({favorites.length})
 				</Text>
 			</TouchableOpacity>
 
@@ -169,16 +169,16 @@ export default function LigandListScreen({onSelectLigand, onLogout}: LigandListS
 						>
 							<Text style={styles.rowText}>{item}</Text>
 						</TouchableOpacity>
-
 						<TouchableOpacity
+							style={[styles.star, favorites.includes(item) && styles.starActive]}
 							onPress={() => toggleFavorite(item)}
 							accessibilityRole="button"
 							accessibilityLabel={favorites.includes(item)
 								? `Remove ${item} from favorites`
 								: `Add ${item} to favorites`}
 						>
-							<Text style={styles.like}>
-								{favorites.includes(item) ? '♥' : '♡'}
+							<Text style={[styles.starText, favorites.includes(item) && styles.starTextActive]}>
+								{favorites.includes(item) ? '★' : '☆'}
 							</Text>
 						</TouchableOpacity>
 					</View>
@@ -186,7 +186,7 @@ export default function LigandListScreen({onSelectLigand, onLogout}: LigandListS
 				ListEmptyComponent={
 					<Text style={styles.empty}>
 						{onlyFavorites && !query.trim()
-							? 'No favorites yet. Tap ♡ on a ligand to add it.'
+							? 'No favorites yet. Tap ☆ on a ligand to add it.'
 							: `No ligands match "${query}".`}
 					</Text>
 				}

@@ -15,10 +15,10 @@ export const styles = StyleSheet.create({
 		right: 20,
 		height: 44,
 		paddingHorizontal: 18,
-		borderRadius: 10,
+		borderRadius: 14,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: '#2563EB',
+		backgroundColor: '#1F7A4D',
 	},
 
 	shareButtonText: {
@@ -40,14 +40,14 @@ export const styles = StyleSheet.create({
 		height: 40,
 		paddingHorizontal: 14,
 		marginHorizontal: 4,
-		borderRadius: 10,
+		borderRadius: 14,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: 'rgba(23, 32, 42, 0.55)',
+		backgroundColor: 'rgba(20, 48, 31, 0.55)',
 	},
 
 	modeButtonActive: {
-		backgroundColor: '#2563EB',
+		backgroundColor: '#1F7A4D',
 	},
 
 	modeText: {

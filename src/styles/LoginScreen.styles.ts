@@ -40,8 +40,8 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 	input: {
 		height: 50,
 		borderWidth: 1,
-		borderColor: '#D5DADF',
-		borderRadius: 10,
+		borderColor: t.border,
+		borderRadius: 14,
 		paddingHorizontal: 14,
 		backgroundColor: t.surface,
 		fontSize: 16,
@@ -51,7 +51,7 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 	button: {
 		height: 50,
 		marginTop: 28,
-		borderRadius: 10,
+		borderRadius: 14,
 		alignItems: 'center',
 		justifyContent: 'center',
 		backgroundColor: t.link,
@@ -70,7 +70,7 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 	biometricButton: {
 		height: 50,
 		marginTop: 12,
-		borderRadius: 10,
+		borderRadius: 14,
 		alignItems: 'center',
 		justifyContent: 'center',
 		borderWidth: 1,

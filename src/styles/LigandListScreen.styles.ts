@@ -42,7 +42,7 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 		height: 50,
 		marginTop: 24,
 		paddingHorizontal: 32,
-		borderRadius: 10,
+		borderRadius: 14,
 		alignItems: 'center',
 		justifyContent: 'center',
 		backgroundColor: t.link,
@@ -59,10 +59,11 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 		margin: 16,
 		paddingHorizontal: 14,
 		borderWidth: 1,
-		borderColor: '#D5DADF',
-		borderRadius: 10,
+		borderColor: t.border,
+		borderRadius: 14,
 		backgroundColor: t.surface,
 		fontSize: 16,
+		color: t.text,
 	},
 
 	row: {
@@ -71,7 +72,7 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 		alignItems: 'center',
 		paddingLeft: 16,
 		borderBottomWidth: StyleSheet.hairlineWidth,
-		borderBottomColor: '#D5DADF',
+		borderBottomColor: t.border,
 		backgroundColor: t.surface,
 	},
 
@@ -81,10 +82,26 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 		justifyContent: 'center',
 	},
 
-	like: {
-		fontSize: 26,
-		color: '#E0245E',
-		paddingHorizontal: 16,
+	star: {
+		width: 34,
+		height: 34,
+		marginHorizontal: 12,
+		borderRadius: 17,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+
+	starActive: {
+		backgroundColor: t.link,
+	},
+
+	starText: {
+		fontSize: 22,
+		color: t.textSecondary,
+	},
+
+	starTextActive: {
+		color: '#FFFFFF',
 	},
 
 	filterButton: {

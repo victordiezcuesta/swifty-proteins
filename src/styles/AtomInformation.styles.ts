@@ -36,6 +36,6 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 
 	line: {
 		fontSize: 14,
-		color: '#D5DADF',
+		color: t.border,
 	},
 });

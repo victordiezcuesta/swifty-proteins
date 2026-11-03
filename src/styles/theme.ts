@@ -10,40 +10,40 @@ export type Theme = {
 	link: string;
 	success: string;
 	error: string;
-	card: string;             // tarjeta de info de átomo/enlace
-	scene: string;            // fondo de la escena 3D
+	card: string; // tarjeta de info de átomo/enlace
+	scene: string; // fondo de la escena 3D
 	ambientIntensity: number; // luz ambiente 3D
-	lightIntensity: number;   // luz direccional 3D
+	lightIntensity: number; // luz direccional 3D
 };
 
 const light: Theme = {
 	isDark: false,
-	background: '#F5F7FA',
+	background: '#EEF4EF',
 	surface: '#FFFFFF',
-	text: '#17202A',
-	textSecondary: '#68737D',
-	border: '#D5DADF',
-	link: '#2563EB',
+	text: '#14301F',
+	textSecondary: '#5E7A68',
+	border: '#D3E2D7',
+	link: '#1F7A4D',
 	success: '#16803C',
 	error: '#B42318',
-	card: 'rgba(23, 32, 42, 0.92)',
-	scene: '#F5F7FA',
+	card: 'rgba(20, 48, 31, 0.92)',
+	scene: '#E3EEE6',
 	ambientIntensity: 0.6,
 	lightIntensity: 1,
 };
 
 const dark: Theme = {
 	isDark: true,
-	background: '#0F1117',
-	surface: '#1B1F2A',
-	text: '#F2F4F7',
-	textSecondary: '#98A2B3',
-	border: '#344054',
-	link: '#60A5FA',
+	background: '#0E1A13',
+	surface: '#16251C',
+	text: '#E6F2E9',
+	textSecondary: '#93AD9C',
+	border: '#2A4033',
+	link: '#34A56F',
 	success: '#4ADE80',
 	error: '#F97066',
-	card: 'rgba(52, 64, 84, 0.95)',
-	scene: '#0F1117',
+	card: 'rgba(30, 52, 40, 0.95)',
+	scene: '#0E1A13',
 	ambientIntensity: 0.8,
 	lightIntensity: 1.2,
 };

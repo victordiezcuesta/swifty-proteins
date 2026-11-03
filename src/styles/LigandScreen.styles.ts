@@ -55,7 +55,7 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 		height: 50,
 		marginTop: 28,
 		paddingHorizontal: 24,
-		borderRadius: 10,
+		borderRadius: 14,
 		alignItems: 'center',
 		justifyContent: 'center',
 		backgroundColor: t.link,
