@@ -97,7 +97,11 @@ export const createStyles = (t: Theme) => StyleSheet.create({
 
 	starText: {
 		fontSize: 22,
+		lineHeight: 26,
+		textAlign: 'center',
+		includeFontPadding: false,
 		color: t.textSecondary,
+		marginTop: -5,
 	},
 
 	starTextActive: {

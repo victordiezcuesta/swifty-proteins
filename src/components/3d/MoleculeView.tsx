@@ -233,6 +233,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		setSelectedBond((data?.bond as BondInfo) ?? null);
 
 		highlightElement(data?.atom ? (data.atom as Atom).element : null); //al tocar un atomo ponemos todos los atomos del mismo elemento mas grande y con mas luz
+		highlightBond(data?.bond ? (data.bond as BondInfo) : null); // al tocar un enlace lo engrosamos
 	}
 
 	async function handleShare()
@@ -270,13 +271,26 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 		for (const child of group.children)
 		{
 			const mesh = child as THREE.Mesh;
-			const material = mesh.material as THREE.MeshStandardMaterial;
 			const match = element !== null && (mesh.userData.atom as Atom).element === element;
 			const base = (mesh.userData.baseScale as number | undefined) ?? 1; // tamaño según el modo
 
-			mesh.scale.setScalar(base * (match ? 1.4 : 1)); // más grande: se nota incluso con el hidrógeno blanco
-			material.emissive.set(match ? '#FFFFFF' : '#000000'); // y brilla un poco
-			material.emissiveIntensity = match ? 0.35 : 0;
+			mesh.scale.setScalar(base * (match ? 1.4 : 1)); // los del mismo elemento se agrandan
+		}
+	}
+
+	function highlightBond(bond: BondInfo | null)
+	{
+		const group = bondsGroupRef.current;
+		if (!group)
+			return;
+
+		for (const child of group.children)
+		{
+			const base = (child.userData.baseThickness as number | undefined) ?? 1; // grosor según el modo
+			const match = bond !== null && child.userData.bond === bond; // el mismo objeto que se guardó en BondsViews
+
+			const thickness = base * (match ? 2 : 1); // el pulsado, el doble de grueso
+			child.scale.set(thickness, 1, thickness); // X y Z = grosor, Y = longitud (no se toca)
 		}
 	}
 
@@ -312,6 +326,7 @@ export default function MoleculeView({molecule}: MoleculeViewProps)
 
 		for (const child of bondsGroup.children)
 		{
+			child.userData.baseThickness = thickness; // lo guardamos para que highlightBond lo respete
 			child.scale.set(thickness, 1, thickness);
 			child.visible = next !== 'space-filling'; // las esferas gigantes ya tapan los enlaces
 		}

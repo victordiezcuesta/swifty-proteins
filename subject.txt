@@ -137,8 +137,11 @@ perfect✅ VII.1 Multiple Visualization Models (completo)
 			• Include a UI control (segmented control, dropdown, or buttons) to switch between models in real-time without reloading the molecule.
 
 
-Revisar ❓ • En la pantalla de create una cuenta que le puedas dar para atras con los botones de android y que vaya al login  e implementar un boton que sea para ir al login
-Revisar ❓ • Cambiar un poco el diseño del create cuenta, login, list lingans y moleculaview
-Revisar ❓ • Cambiar icono de like por estrella de fav
-Revisar ❓ • el boton de back to ligands se pone debajo de los botones de android de home, para atras y abrir ventana con aplicaciones abiertas
-Revisar ❓ • cuando estamos en una vision 3d de una molecula y pulsamos el boton de atras de android que no se cierre la app, que vuelva a list ligands
+perfect ✅ • En la pantalla de create una cuenta que le puedas dar para atras con los botones de android y que vaya al login  e implementar un boton que sea para ir al login
+perfect ✅ • Cambiar un poco el diseño del create cuenta, login, list lingans y moleculaview
+perfect ✅ • Cambiar icono de like por estrella de fav
+perfect ✅ • el boton de back to ligands se pone debajo de los botones de android de home, para atras y abrir ventana con aplicaciones abiertas
+perfect ✅ • cuando estamos en una vision 3d de una molecula y pulsamos el boton de atras de android que no se cierre la app, que vuelva a list ligands
+perfect ✅ • Cuando pulsamos un bond para la info quiero que se amplie un poco el que hemos tocado como pasa con los atoms pero sin cambiar de color y solo el que hemos tocado.
+perfect ✅ • Cuando pulsamos un atomo para la info quiero que solo se amplie los del mismo tipo pero que no cambie el color
+perfect ✅ • el logotipo de la estrella cuando le doy a me gusta lo pone en un circulo verde pero la estrella no esta centrada
