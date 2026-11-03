@@ -67,18 +67,18 @@ function AuxApp()
 
 	useEffect(() =>
 	{
-		if (screen !== 'register') //solo interceptamos el boton atras en la pantalla de registro
+		if (screen !== 'register' && screen !== 'ligand') //solo interceptamos el boton atras en register y ligand
 			return;
 
 		const subscription = BackHandler.addEventListener('hardwareBackPress', () =>
 		{
-			setScreen('login'); //volvemos al login
+			setScreen(screen === 'ligand' ? 'list' : 'login'); //desde ligand volvemos a la lista, desde register al login
 			return true; //true = "ya lo he gestionado yo", si devolvemos false Android cerraria la app
 		});
 
 		return () =>
 		{
-			subscription.remove(); //al salir de register (o cambiar screen) quitamos el listener
+			subscription.remove(); //al cambiar screen quitamos el listener y se vuelve a crear con el valor nuevo
 		};
 	}, [screen]);
 
