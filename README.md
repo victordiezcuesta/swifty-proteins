@@ -10,7 +10,7 @@ Swifty Proteins was developed as part of the **42 School curriculum**, with a fo
 
 A short demonstration of Swifty Proteins running on Android.
 
-https://github.com/user-attachments/assets/20b37145-f6db-46c8-9ee6-2a6bc1ae8837
+https://github.com/user-attachments/assets/89c902c8-de65-46c0-a0fe-0b9ca8e7a66f
 
 ---
 
